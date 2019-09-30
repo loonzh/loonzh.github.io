@@ -118,9 +118,9 @@ index_with_subtitle: false
 # When running the site in a subdirectory (e.g. domain.tld/blog), remove the leading slash (/archives -> archives)
 menu:
   home: /
-  #categories: /categories/
+  categories: /categories/
   #about: /about/
-  archives: /archives/
+  #archives: /archives/
   tags: /tags/
   #sitemap: /sitemap.xml
   #commonweal: /404.html
@@ -407,7 +407,7 @@ wildfire:
     siteId:
   # other configs
   theme: light # or dark
-  locale: en # or other locales, e.g. zh-CN
+  locale: zh-CN # or other locales, e.g. zh-CN
   defaultAvatarURL: 
 # Any question? 
 # Raise an issue here: https://github.com/cheng-kang/wildfire/issues
