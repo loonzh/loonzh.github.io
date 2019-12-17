@@ -12,6 +12,8 @@ author: 片纸
 language: zh-Hans
 date_format: '%Y-%m-%d'
 
+excerpt_separator:  '<!-- more -->'
+
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com' and baseurl as '/child'
 url:
@@ -304,8 +306,8 @@ excerpt_description: true
 # Automatically Excerpt. Not recommend.
 # Please use <!-- more --> in the post to control excerpt accurately.
 auto_excerpt:
-  enable: true
-  length: 1
+  enable: false
+  length: 150
 
 # Post meta display settings
 post_meta:
