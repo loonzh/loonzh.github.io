@@ -2,7 +2,7 @@
 layout: post
 title: HAProxy+keepalived+Mycat高可用架构
 categories: [数据库]
-tags: [高可用,Mycat,keepalive,HAproxy]
+tags: [Mycat,keepalive,HAproxy]
 ---
 #### 1. 安装依赖包
 下载[HAproxy源码](https://src.fedoraproject.org/repo/pkgs/haproxy/)并上传到目标服务器。  
