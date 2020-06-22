@@ -1,134 +1,120 @@
 ---
 layout: post
-title: HAProxy+keepalived+Mycat高可用架构
+title: HAProxy+keepalived+Mycat
 categories: [数据库]
 tags: [Mycat,keepalive,HAproxy]
 ---
-#### 1. 安装依赖包
-下载[HAproxy源码](https://src.fedoraproject.org/repo/pkgs/haproxy/)并上传到目标服务器。  
-`# yum install gcc gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel -y`  
+#### 1. 安装HAProxy
+##### 1.1 编译安装
+**[安装环境依赖]**  
+`yum install gcc gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel -y`  
 <!-- more -->
-#### 2. 创建安装目录
-`# mkdir /home/haproxy`  
-#### 3. 编译安装
-`# tar -zxvf haproxy-1.5.14.tar.gz`  
-`# cd haproxy-1.5.14`  
-`# make TARGET=linux2628 ARCH=x86_64 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1 PREFIX=/home/haproxy`  
-*TARGET指定内核版本（查看命令uname -r），高于2.6.28的建议设置为linux2628，ARCH指定系统架构。*  
-`# make install PREFIX=/home/haproxy`  
-`# cd /home/haproxy/`  
-#### 4. 创建配置文件
-`# mkdir -p /home/haproxy/conf`  
-`# mkdir -p /etc/haproxy/`  
-`# cp /home/haproxy/examples/haproxy.cfg /home/haproxy/conf/`  
-`# ln -s /home/haproxy/conf/haproxy.cfg /etc/haproxy/haproxy.cfg
-`# cp -r /home/haproxy/examples/errorfiles/ /home/haproxy/`  
-`# ln -s /home/haproxy/errorfiles /etc/haproxy/errorfiles`  
-#### 5. 配置自启动服务
-`# cp /home/haproxy/examples/haproxy.init /etc/rc.d/init.d/haproxy`  
-`# chmod +x /etc/rc.d/init.d/haproxy`  
-设置开机启动  
-`# chkconfig --add haproxy`  
-`# chkconfig haproxy --level 2345 on`  
-添加命令脚本软连接  
-`# ln -s /home/haproxy/sbin/haproxy /usr/sbin`  
-#### 5. 配置Mycat负载均衡集群
-##### 5.1 修改haproxy.cfg 配置文件
-`# cd /usr/local/haproxy/`  
-`# vim conf/haproxy.cfg`  
+**[创建安装目录]**  
+`mkdir /home/haproxy`  
+**[解压源码]**  
+下载[HAproxy源码](https://src.fedoraproject.org/repo/pkgs/haproxy/)并上传  
+`tar -zxvf haproxy-1.5.14.tar.gz`  
+**[编译安装源码]***TARGET指定内核版本(查看uname -r),高于2.6.28的建议设为linux2628,ARCH指定系统架构,使用PRCE、OPENSSL、ZLIB*  
+`cd haproxy-1.5.14`  
+`make TARGET=linux2628 ARCH=x86_64 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1 PREFIX=/home/haproxy`  
+`make install PREFIX=/home/haproxy`  
+##### 1.2 创建配置文件
+**[在/home和/etc创建配置文件目录]**  
+`mkdir -p /home/haproxy/conf`  
+`mkdir -p /etc/haproxy/`  
+**[复制配置文件和错误文件]**  
+`cp /home/haproxy-1.5.14/examples/haproxy.cfg /home/haproxy/conf/`  
+`cp -r /home/haproxy-1.5.14/examples/errorfiles/ /home/haproxy/`  
+**[创建软连接]**  
+`ln -s /home/haproxy/conf/haproxy.cfg /etc/haproxy/haproxy.cfg`  
+`ln -s /home/haproxy/errorfiles/ /etc/haproxy/`  
+##### 1.3 设为服务开机自启
+**[复制服务脚本至系统服务目录]**  
+`cp /home/haproxy-1.5.14/examples/haproxy.init /etc/rc.d/init.d/haproxy`  
+**[赋予服务脚本执行权限]**  
+`chmod +x /etc/rc.d/init.d/haproxy`  
+**[将服务设为开机自启]**  
+`chkconfig haproxy --level 2345 on`  
+**[添加命令脚本软连接]**  
+`ln -s /home/haproxy/sbin/haproxy /usr/sbin`  
+#### 2. 配置Mycat负载均衡集群
+##### 2.1 修改haproxy.cfg配置文件
+`vi /home/haproxy/conf/haproxy.cfg`  
 ```
 # this config needs haproxy-1.1.28 or haproxy-1.2.1
-# global配置中的参数为进程级别的参数，通常与其运行的操作系统有关
 global
- log 127.0.0.1 local0 info 
- # 定义全局的syslog服务器，最多可以定义2个,local0是日志设备，对应于/etc/rsyslog.conf中的配置，默认回收info的日志级别
- #log 127.0.0.1 local1 notice
- #log loghost local0 info
- maxconn 4096 
- # 设定每个haproxy进程所接受的最大并发连接数，其等同于命令行选项"-n"，"ulimitn"自动计算的结果正式参照从参数设定的
+ log 127.0.0.1 local0 info
+ [定义全局syslog服务器(最多2个)，local0是日志设备(/etc/rsyslog.conf的配置)，默认回收info的日志级别]
+ maxconn 4096
+ [单个haproxy进程的最大并发连接数]
  chroot /var/lib/haproxy
- # 修改HAProxy的工作目录至指定的目录并在放弃权限之前执行chroot() 操作，可以提升 haproxy 的安全级别
- pidfile /var/run/haproxy.pid 
- # 进程文件（默认路径 /var/run/haproxy.pid）
+ [修改HAProxy的工作目录至指定的目录，且在放弃权限前执行chroot()操作，提升haproxy的安全级别]
+ pidfile /var/run/haproxy.pid
+ [进程文件(默认路径 /var/run/haproxy.pid)]
  user haproxy 
- # 同uid，但这里使用的为用户名
+ [同uid，但这里使用用户名]
  group haproxy 
- # 同gid，不过这里为指定的用户组名
- #uid 99
- #gid 99
- daemon 
- # 设置haproxy后台守护进程形式运行
+ [同gid，但这里使用用户组名]
+ daemon
+ [haproxy以后台守护进程形式运行]
  nbproc 1 
- # 指定启动的haproxy进程个数, 只能用于守护进程模式的haproxy；默认为止启动1个进程，一般只在单进程仅能打开少数文件描述符的场中中才使用多进程模式
+ [启动的haproxy进程数, 只能用于守护进程模式,默认为1]
  stats socket /var/lib/haproxy/stats
- #debug
- #quiet
- node AcroUC-node1 
- # 定义当前节点的名称，用于HA场景中多haproxy进程共享同一个IP地址时
- description AcroUC-node1-haproxy 
- # 当前实例的描述信息
-# defaults：用于为所有其他配置段提供默认参数，这默认配置参数可由下一个"defaults"所重新设定
+ node Node1
+ [节点名称，用于多haproxy进程共享同一IP地址时]
+ description Node1-haproxy
+ [当前实例的描述信息]
 defaults
  log global
- mode tcp 
- # haproxy运行模式（tcp:四层 , http:七层 , health:状态检查,只会返回OK）
- # tcp：实例运行于纯TCP模式，在客户端和服务器端之间将建立一个全双工的连接，且不会对7层报文做任何类型的检查；通常用于SSL、SSH、SMTP等应用；
- # http：实例运行于HTTP模式，客户端请求在转发至后端服务器之前将被深度分析，所有不与RFC格式兼容的请求都会被拒绝；此为默认模式；
- # health：实例运行于health模式，其对入站请求仅响应“OK”信息并关闭连接，且不会记录任何日志信息 ，此模式将用于相应外部组件的监控状态检测请求
+ mode tcp
+ [haproxy运行模式，默认为http]
  option tcplog
  option dontlognull
  option redispatch 
- # serverId对应的服务器挂掉后,强制定向到其他健康的服务器
+ [serverId对应的服务器挂掉后，强制定向到其他健康的服务器]
  retries 3 
- # 三次连接失败则服务器不用
- #redispatch
+ [三次连接失败，则服务器不用]
  maxconn 2000
- # 前端的最大并发连接数（默认为2000）
- # 其不能用于backend区段，对于大型站点来说，可以尽可能提高此值以便让haproxy管理连接队列，从而避免无法应答用户请求。当然，此最大值不能超过“global”段中的定义。
- # 此外，haproxy会为每个连接维持两个缓冲，每个缓存的大小为8KB，再加上其他的数据，每个连接将大约占用17KB的RAM空间，这意味着经过适当优化后，1GB的可用RAM空间能够维护40000-50000并发连接。
- # 如果指定了一个过大值，极端场景中，其最终所占据的空间可能会超过当前主机的可用内存，这可能会带来意想不到的结果，因此，将其设定一个可接受值放为明智绝对，其默认为2000。
- #contimeout 5000
- #clitimeout 50000
- #srvtimeout 50000
+ [前端的最大并发连接数，默认为2000]
+ [haproxy为每个连接维持两个8KB缓冲，适当优化后，1GB的可用RAM空间可维护40000-50000并发连接]
  timeout http-request 10s
  timeout queue 1m
- timeout connect 10s 
- # 连接超时(默认是毫秒,单位可以设置us,ms,s,m,h,d)
- timeout client 1m 
- # 客户端超时
- timeout server 1m 
- # 服务器超时
+ timeout connect 10s
+ [连接超时(默认单位毫秒，可设置us、ms、s、m、h、d)]
+ timeout client 1m
+ [客户端超时]
+ timeout server 1m
+ [服务器超时]
  timeout http-keep-alive 10s
- timeout check 10s 
- # 心跳检测
+ timeout check 10s
+ [心跳检测时间间隔]
 listen statistics 
-# 配置haproxy状态页（用来查看的页面）
+[配置haproxy状态页(可视化)]
  mode http
- bind *:8888 
- # 绑定端口
+ bind *:8888
+ [状态页端口]
  option httplog 
- # 启用日志记录HTTP请求
+ [启用日志记录HTTP请求]
  stats enable
- stats auth admin:admin 
- # 统计页面用户名和密码设置, 如果要设置多个，另起一行写入即可
- stats uri /admin?stats 
- # 自定义统计页面的URL，默认为/haproxy?stats
- stats hide-version 
- # 隐藏统计页面上HAProxy的版本信息
- stats refresh 30s 
- # 统计页面自动刷新时间
- stats admin if TRUE 
- #如果认证通过就做管理功能，可以管理后端的服务器
- stats realm Hapadmin 
- # 统计页面密码框上提示文本，默认为Haproxy\ Statistics
-
+ stats auth admin:admin
+ [状态页用户名和密码, 如需设置多个，另起一行写入即可]
+ stats uri /haproxy
+ [自定义状态页URL，默认为/admin?stats]
+ stats hide-version
+ [隐藏状态页的HAProxy版本信息]
+ stats refresh 30s
+ [状态页自动刷新时间]
+ stats admin if TRUE
+ [若认证通过，则可管理后端服务器]
+ stats realm Hapadmin
+ [密码框提示文本，默认为Haproxy\Statistics]
 listen mycat_servers
- bind *:3307 
- # 绑定端口
+ bind *:3307
+ [连接Mycat端口]
  mode tcp
- option tcplog 
- # 记录TCP请求日志
- option tcpka 
+ option tcplog
+ [记录TCP请求日志]
+ option tcpka
  # 是否允许向server和client发送keepalive
  option httpchk OPTIONS * HTTP/1.1\r\nHost:\ www 
  # 后端服务状态检测：向后端服务器的48700端口（端口值在后端服务器上通过xinetd配置）发送 OPTIONS 请求，(原理请参考HTTP协议) ，HAProxy会根据返回内容来判断后端服务是否可用（2xx 和 3xx 的响应码表示健康状态，其他响应码或无响应表示服务器故障）。
@@ -152,47 +138,41 @@ listen mycat_servers
  # maxconn:指定此服务器接受的最大并发连接数，如果发往此服务器的连接数目高于此处指定的值，其将被放置于请求队列，以等待其他连接被释放
 ```
 *注意：多节点部署时node、description的值要做相应调整。*  
-##### 5.2 根据以上HAProxy配置文件要求做以下配置
+##### 2.2 根据以上HAProxy配置文件要求做以下配置
 1.添加haproxy用户组和用户  
-`# groupadd haproxy`  
-`# useradd -g haproxy -s /bin/false haproxy`  
+`groupadd haproxy`  
+`useradd -g haproxy -s /bin/false haproxy`  
 2.创建chroot运行的路径  
-`# mkdir /var/lib/haproxy`  
-`# chown -R haproxy.haproxy /var/lib/haproxy/`  
-`# chown -Rf haproxy.haproxy /usr/local/haproxy/`  
-3.防火墙中打开3306端口、3307端口和48800端口
-`# vim /etc/sysconfig/iptables`
-增加：  
-`-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT`  
-`-A INPUT -m state --state NEW -m tcp -p tcp --dport 3307 -j ACCEPT`  
-`-A INPUT -m state --state NEW -m tcp -p tcp --dport 48800 -j ACCEPT`  
-保存后重启防火墙：  
-`# service iptables restart`  
-##### 5.3 开启rsyslog的haproxy日志记录功能  
+`mkdir /var/lib/haproxy`  
+`chown -R haproxy.haproxy /var/lib/haproxy/`  
+`chown -Rf haproxy.haproxy /usr/local/haproxy/`  
+**[防火墙开放3306端口、3307端口和48800端口]**  
+`firewall-cmd --permanent --add-port=3306-3307/tcp`  
+`firewall-cmd --permanent --add-port=48800/tcp`  
+**[重启防火墙]**  
+`systemctl reload firewalld`  
+##### 2.3 开启rsyslog的haproxy日志记录功能  
 默认情况下 haproxy是不记录日志的，如果需要记录日志，还需要配置系统的syslog，在linux系统中是rsyslog服务。syslog服务器可以用作一个网络中的日志监控中心，rsyslog是一个开源工具，被广泛用于Linux系统以通过TCP/UDP协议转发或接收日志消息。  
 安装配置rsyslog服务：  
-`# yum install rsyslog -y`  
-`# vim /etc/rsyslog.conf`  
+`yum install rsyslog -y`  
+`vim /etc/rsyslog.conf`  
 *把$ModLoad imudp和$UDPServerRun 514前面的 # 去掉。$ModLoad imudp是模块名，支持UDP协议，$UDPServerRun 514允许514端口接收使用UDP和TCP协议转发过来的日志，而rsyslog在默认情况下，正是在514端口监听UDP。*  
 *确认GLOBAL DIRECTIVES段中是否有`$IncludeConfig /etc/rsyslog.d/*.conf`，没有则增加上此配置。*  
-`# cd /etc/rsyslog.d/`  
-`# vim haproxy.conf`  
+`vim /etc/rsyslog.d/haproxy.conf`  
 增加以下内容：  
 ```
 local0.* /var/log/haproxy.log
 &~
 ```
 *如果不加上面的的"&~"配置,则除了在/var/log/haproxy.log中写入日志外，也会写入/var/log/message文件中。*  
-`# service rsyslog restart`  
+`systemctl restart rsyslog`  
 *HAProxy服务启动后，就能在/var/log/haproxy.log中看到日志了。*
 ##### 5.4 配置系统内核的IP包转发功能
-`# vim /etc/sysctl.conf`  
+`vim /etc/sysctl.conf`  
 使配置生效:  
-`# sysctl -p`  
+`sysctl -p`  
 ##### 5.5 启动HAProxy
-`# service haproxy start`  
-`# ps -ef | grep haproxy`  
-`# netstat -tnlp | grep haproxy`  
+`systemctl start haproxy`  
 ##### 5.6 通过HAProxy连接Mycat
 `# mysql -uroot -proot -h192.168.106.251 -P3307`  
 ##### 5.7 登录HAProxy的状态信息统计页面
@@ -426,6 +406,7 @@ Keepalived的所有功能是配置keepalived.conf文件来实现的。
 [root@AcroUC-node1 mysql]# yum install gcc gcc-c++ openssl openssl-devel -y
 5.2.编译安装
 解压：
+https://www.keepalived.org/download.html
 [root@AcroUC-node1 mysql]# tar -zxvf keepalived-1.2.19.tar.gz
 配置：
 [root@AcroUC-node1 mysql]# cd keepalived-1.2.19
@@ -441,12 +422,6 @@ keepalived的./configure输出Use IPVS Framework 为No 则使用keepalived启用
 从/etc/keepalived目录下查找keepalived.conf配置文件，如果没有找到则使用默认的配置。/etc/keepalived目
 录安装时默认是没有安装的，需要手动创建。配置文件目录结构如下所示：
 [root@AcroUC-node1 keepalived-1.2.19]# cd /usr/local/keepalived/
-[root@AcroUC-node1 keepalived]# tree -l etc/
-分别对应系统目录（忽略samples目录）：
-/etc/keepalived/keepalived.conf
-/etc/rc.d/init.d/keepalived
-/etc/sysconfig/keepalived
-将配置文件拷贝到系统对应的目录下：
 [root@AcroUC-node1 keepalived]# mkdir /etc/keepalived
 [root@AcroUC-node1 keepalived]# cp /usr/local/keepalived/etc/keepalived/keepalived.conf
 /etc/keepalived/keepalived.conf
