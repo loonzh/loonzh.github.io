@@ -12,14 +12,16 @@ tags: [Mycat,keepalive,HAproxy]
 <!-- more -->
 **[创建安装目录]**  
 `mkdir /home/haproxy`  
-**[解压源码]**  
 下载[HAproxy源码](https://src.fedoraproject.org/repo/pkgs/haproxy/)并上传  
+**[解压源码]**  
 `tar -zxvf haproxy-1.5.14.tar.gz`  
-**[编译安装源码]***TARGET指定内核版本(查看uname -r),高于2.6.28的建议设为linux2628,ARCH指定系统架构,使用PRCE、OPENSSL、ZLIB*  
+**[编译安装源码]**  
 `cd haproxy-1.5.14`  
-`make TARGET=linux2628 ARCH=x86_64 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1 PREFIX=/home/haproxy`  
-`make install PREFIX=/home/haproxy`  
-
+```
+make TARGET=linux2628 ARCH=x86_64 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1 PREFIX=/home/haproxy
+[TARGET指定内核版本(查看uname -r),高于2.6.28的建议设为linux2628,ARCH指定系统架构,使用PRCE、OPENSSL、ZLIB]
+make install PREFIX=/home/haproxy
+```  
 ##### 1.2 创建配置文件
 **[在/home和/etc创建配置文件目录]**  
 `mkdir -p /home/haproxy/conf`  
@@ -159,7 +161,7 @@ HAproxy默认不记录日志，若需记录日志，则需配置系统的syslog�
 rsyslog是一个开源工具，被广泛用于Linux系统中通过TCP/UDP协议转发或接收日志消息，可以用作一个网络中的日志监控中心。  
 **[安装配置rsyslog服务]**  
 `yum -y install rsyslog`  
-`vi /etc/rsyslog.conf`*有配置型则取消#开启功能，无则增加配置项*  
+`vi /etc/rsyslog.conf`*有则取消#开启配置项功能，无则增加配置项*  
 ```
 #### MODULES ####
 # Provides UDP syslog reception
@@ -384,8 +386,8 @@ frontend webservs
 ```
 #### 4. Keepalived安装
 Keepalived主要提供loadbalancing（负载均衡）和 high-availability（高可用）功能。  
-负载均衡的实现需要依赖Linux的虚拟服务内核模块（ipvs）。
-高可用则是通过VRRP协议实现多台机器之间的故障转移服务。
+负载均衡的实现需要依赖Linux的虚拟服务内核模块(ipvs)。  
+高可用则是通过VRRP协议实现多台机器之间的故障转移服务。  
 ##### 4.1 安装编译所需的依赖包
 `yum install gcc gcc-c++ openssl openssl-devel -y`  
 ##### 4.2 编译安装
@@ -395,12 +397,12 @@ Keepalived主要提供loadbalancing（负载均衡）和 high-availability（高
 **[生成Makefile]**  
 `cd keepalived-1.2.19`  
 `./configure --prefix=/home/keepalived --with-kerneldir=/usr/src/kernels/linux版本`  
-`--with-kernel-dir根据自己的linux版本填写(使用命令uname –r查询)
+*--with-kernel-dir根据自己的linux版本填写(使用命令uname –r查询)*  
 **[编译安装]**  
 `make`  
 `make install`  
 ##### 4.3 创建配置文件
-keepalived启动时会查找`/etc/keepalived/keepalived.conf`(需手动创建)，没有找到则使用默认配置。  
+keepalived启动时会查找`/etc/keepalived/keepalived.conf`(需手动创建)，若无则使用默认配置。  
 `cd /home/keepalived/`  
 `mkdir /etc/keepalived`  
 `cp /home/keepalived/etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf`  
@@ -473,7 +475,7 @@ vrrp_instance <实例名称>{
  virtual_ipaddress {
  [虚拟IP池，主备设置必须一样]
   192.168.1.10/24 dev eth0 label eth0:0
-  [虚拟IP(VIP)地址，一行一个，允许多个]
+  [虚拟IP(VIP)地址，允许多个，eth0是本机IP网卡，eth0:0是绑定的虚拟IP的网卡]
  }
  track_script {
   chk_haproxy
@@ -546,7 +548,7 @@ vrrp_instance <实例名称>{
  virtual_ipaddress {
  [虚拟IP池，主备设置必须一样]
   192.168.1.10/24 dev eth0 label eth0:0
-  [虚拟IP(VIP)地址，一行一个，允许多个]
+  [虚拟IP(VIP)地址，允许多个，eth0是本机IP网卡，eth0:0是绑定的虚拟IP的网卡]
  }
  track_script {
   chk_haproxy
@@ -559,7 +561,7 @@ vrrp_instance <实例名称>{
 }
 ```
 ##### 5.3 编写HAProxy状态检测脚本
-**若haproxy停止运行，则尝试启动，若无法启动则杀死本机keepalived进程，keepalive会将VIP绑定到BACKUP上**  
+**若haproxy停止运行，则尝试启动，否则杀死本机keepalived进程，将VIP绑定到Slave上**  
 `vi /etc/keepalived/haproxy_check.sh`  
 ```
 #!/bin/bash
@@ -602,4 +604,4 @@ fi
 5、重新启动Master的keepalived服务  
 `systemctl start keepalived`  
 **刷新http://虚拟IP:8888/admin?stats**  
-*可以看到此时VIP仍在Slave上，这是因为keepalived为了避免浪费资源，未配置notify_backup项，不会抢占VIP*  
+*可以看到此时VIP仍在Slave上，keepalived为了避免浪费资源，未配置notify_backup项，不会抢占VIP*  
