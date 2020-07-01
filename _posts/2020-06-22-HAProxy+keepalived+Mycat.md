@@ -180,7 +180,6 @@ $IncludeConfig /etc/rsyslog.d/*.conf
 `local0.* /var/log/haproxy.log`  
 `&~`  
 *若不加[&~],则在/var/log/haproxy.log中写入日志外，也会在/var/log/message写入日志*  
-```
 **[重启rsyslog]**  
 `systemctl restart rsyslog`  
 *HAProxy服务启动后，就能在/var/log/haproxy.log中看到日志了*  
