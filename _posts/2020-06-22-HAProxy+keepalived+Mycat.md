@@ -18,7 +18,7 @@ tags: [Mycat,keepalive,HAproxy]
 **[编译安装源码]**  
 `cd haproxy-1.5.14`  
 `make TARGET=linux2628 ARCH=x86_64 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1 PREFIX=/home/haproxy/`  
-*TARGET指定内核版本(查看uname -r),高于2.6.28的建议设为linux2628,ARCH指定系统架构,使用PRCE、OPENSSL、ZLIB*  
+*TARGET指定内核版本`uname -r`，高于2.6.28的建议设为linux2628，ARCH指定系统架构*  
 `make install PREFIX=/home/haproxy`    
 ##### 1.2 创建配置文件
 **[在/home和/etc创建配置文件目录]**  
