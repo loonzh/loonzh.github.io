@@ -17,11 +17,9 @@ tags: [Mycat,keepalive,HAproxy]
 `tar -zxvf haproxy-1.5.14.tar.gz`  
 **[编译安装源码]**  
 `cd haproxy-1.5.14`  
-```
-make TARGET=linux2628 ARCH=x86_64 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1 PREFIX=/home/haproxy
-[TARGET指定内核版本(查看uname -r),高于2.6.28的建议设为linux2628,ARCH指定系统架构,使用PRCE、OPENSSL、ZLIB]
-make install PREFIX=/home/haproxy
-```  
+`make TARGET=linux2628 ARCH=x86_64 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1 PREFIX=/home/haproxy/`  
+*TARGET指定内核版本(查看uname -r),高于2.6.28的建议设为linux2628,ARCH指定系统架构,使用PRCE、OPENSSL、ZLIB*  
+`make install PREFIX=/home/haproxy`    
 ##### 1.2 创建配置文件
 **[在/home和/etc创建配置文件目录]**  
 `mkdir -p /home/haproxy/conf`  
@@ -179,11 +177,9 @@ $InputTCPServerRun 514
 $IncludeConfig /etc/rsyslog.d/*.conf
 ```  
 `vi /etc/rsyslog.d/haproxy.conf`*增加HAProxy日志功能*  
-
-```
-local0.* /var/log/haproxy.log
-&~
-[若不加[&~],则在/var/log/haproxy.log中写入日志外，也会在/var/log/message写入日志]
+`local0.* /var/log/haproxy.log`  
+`&~`  
+*若不加[&~],则在/var/log/haproxy.log中写入日志外，也会在/var/log/message写入日志*  
 ```
 **[重启rsyslog]**  
 `systemctl restart rsyslog`  
