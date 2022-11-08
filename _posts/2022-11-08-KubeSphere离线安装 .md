@@ -4,12 +4,28 @@ title: KubeSphere离线安装
 categories: [Kubernetes]
 tags: [Kubernetes]
 ---
+#### 1. 前期准备
+[在互联网Linux机器使用本地yum源安装wget]  
+`yum -y install wget`  
+[下载并更换阿里yum源]  
+`wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`  
+[更新yum源缓存]  
+`yum clean all`  
+`yum makecache`  
+[安装yum-utils]  
+`yum -y install yum-utils`  
+[下载conntrack-tools和socat离线依赖包]  
+`repotrack conntrack-tools`  
+`repotrack socat`  
+[将下载的依赖包复制到离线服务器，一次性安装]  
+`rpm -Uvh --force --nodeps *.rpm`  
 #### 1.	制作manifest
-KubeSphere离线安装使用Kubekey工具完成，离线安装前先要在一台连接互联网的Linux机器上生成制品(artifact)，而制品包含的内容由清单(manifest)指定，所以需要先按照规范制作manifest.yaml文件。  
+KubeSphere离线安装使用Kubekey工具完成，离线安装前先要生成制品(artifact)，而制品包含的内容由清单(manifest)指定，所以需要先按照规范制作manifest.yaml文件。  
 `vi manifest.yaml`  
 [centos7-rpms-amd64.iso和kubekey.tar.gz
 下载](https://github.com/kubesphere/kubekey/releases)  
 <!-- more -->  
+
 ```
 apiVersion: kubekey.kubesphere.io/v1alpha2
 kind: Manifest
