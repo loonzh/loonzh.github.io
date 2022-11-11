@@ -257,6 +257,124 @@ spec:
     registryMirrors: []
     insecureRegistries: []
   addons: []
+---
+apiVersion: installer.kubesphere.io/v1alpha1
+kind: ClusterConfiguration
+metadata:
+  name: ks-installer
+  namespace: kubesphere-system
+  labels:
+    version: v3.3.1
+spec:
+  persistence:
+    storageClass: ""
+  authentication:
+    jwtSecret: ""
+  zone: ""
+  local_registry: ""
+  namespace_override: ""
+  etcd:
+    monitoring: false
+    endpointIps: localhost
+    port: 2379
+    tlsEnable: true
+  common:
+    core:
+      console:
+        enableMultiLogin: true
+        port: 30880
+        type: NodePort
+    redis:
+      enabled: false
+      volumeSize: 2Gi
+    openldap:
+      enabled: false
+      volumeSize: 2Gi
+    minio:
+      volumeSize: 20Gi
+    monitoring:
+      endpoint: http://prometheus-operated.kubesphere-monitoring-system.svc:9090
+      GPUMonitoring:
+        enabled: false
+    gpu:
+      kinds:
+      - resourceName: "nvidia.com/gpu"
+        resourceType: "GPU"
+        default: true
+    es:
+      logMaxAge: 7
+      elkPrefix: logstash
+      basicAuth:
+        enabled: false
+        username: ""
+        password: ""
+      externalElasticsearchHost: ""
+      externalElasticsearchPort: ""
+  alerting:
+    enabled: false
+  auditing:
+    enabled: false
+  devops:
+    enabled: false
+    jenkinsMemoryLim: 8Gi
+    jenkinsMemoryReq: 4Gi
+    jenkinsVolumeSize: 8Gi
+  events:
+    enabled: false
+  logging:
+    enabled: false
+    logsidecar:
+      enabled: true
+      replicas: 2
+  metrics_server:
+    enabled: false
+  monitoring:
+    storageClass: ""
+    node_exporter:
+      port: 9100
+    gpu:
+      nvidia_dcgm_exporter:
+        enabled: false
+  multicluster:
+    clusterRole: none
+  network:
+    networkpolicy:
+      enabled: false
+    ippool:
+      type: none
+    topology:
+      type: none
+  openpitrix:
+    store:
+      enabled: false
+  servicemesh:
+    enabled: false
+    istio:
+      components:
+        ingressGateways:
+        - name: istio-ingressgateway
+          enabled: false
+        cni:
+          enabled: false
+  edgeruntime:
+    enabled: false
+    kubeedge:
+      enabled: false
+      cloudCore:
+        cloudHub:
+          advertiseAddress:
+            - ""
+        service:
+          cloudhubNodePort: "30000"
+          cloudhubQuicNodePort: "30001"
+          cloudhubHttpsNodePort: "30002"
+          cloudstreamNodePort: "30003"
+          tunnelNodePort: "30004"
+      iptables-manager:
+        enabled: true
+        mode: "external"
+  terminal:
+    timeout: 600
 ```
 #### 4. 安装Harbor镜像仓库
 [赋予执行权限]  
