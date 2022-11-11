@@ -20,7 +20,7 @@ tags: [Kubernetes]
 `repotrack socat`  
 [将下载的依赖包复制到离线服务器，一次性安装]  
 `rpm -Uvh --force --nodeps *.rpm`  
-#### 1.	制作manifest
+#### 2.	制作manifest
 KubeSphere离线安装使用Kubekey工具完成，离线安装前先要生成制品(artifact)，而制品包含的内容由清单(manifest)指定，所以需要先按照规范制作manifest.yaml文件。  
 `vi manifest.yaml`  
 [centos7-rpms-amd64.iso和kubekey.tar.gz
@@ -202,13 +202,13 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/examples-bookinfo-ratings-v1:1.16.3
   - registry.cn-beijing.aliyuncs.com/kubesphereio/scope:1.13.0
 ```
-#### 2. 生成制品
+#### 3. 生成制品
 [切换到中文下载地址]  
 `export KKZONE=cn`  
 [开始生成制品]  
 `./kk artifact export -m manifest.yaml -o kubesphere.tar.gz`  
 **生成制品时需要访问GitHub/Googleapis，下载速度较慢**  
-#### 3. 制作离线集群配置文件
+#### 4. 制作离线集群配置文件
 将kk和kubesphere.tar.gz复制到离线环境安装节点。  
 `vi config-sample.yaml`  
 ```
@@ -374,7 +374,7 @@ spec:
   terminal:
     timeout: 600
 ```
-#### 4. 安装Harbor镜像仓库
+#### 5. 安装Harbor镜像仓库
 [赋予执行权限]  
 `chmod +x kk`  
 [使用制品安装Harbor]  
@@ -421,7 +421,7 @@ done
 ```
 [执行脚本初始化Harbor]  
 `sh create_project_harbor.sh`  
-#### 5. 安装KubeSphere集群
+#### 6. 安装KubeSphere集群
 `./kk create cluster -f config-sample.yaml -a kubesphere.tar.gz --with-packages
 `  
 [查看集群状态]  
