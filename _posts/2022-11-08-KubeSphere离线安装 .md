@@ -9,6 +9,7 @@ tags: [Kubernetes]
 `yum -y install wget`  
 [下载并更换阿里yum源]  
 `wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`  
+<!-- more -->  
 [更新yum源缓存]  
 `yum clean all`  
 `yum makecache`  
@@ -24,8 +25,6 @@ KubeSphere离线安装使用Kubekey工具完成，离线安装前先要生成制
 `vi manifest.yaml`  
 [centos7-rpms-amd64.iso和kubekey.tar.gz
 下载](https://github.com/kubesphere/kubekey/releases)  
-<!-- more -->  
-
 ```
 apiVersion: kubekey.kubesphere.io/v1alpha2
 kind: Manifest
@@ -202,7 +201,6 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/examples-bookinfo-details-v1:1.16.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/examples-bookinfo-ratings-v1:1.16.3
   - registry.cn-beijing.aliyuncs.com/kubesphereio/scope:1.13.0
-
 ```
 #### 2. 生成制品
 [切换到中文下载地址]  
