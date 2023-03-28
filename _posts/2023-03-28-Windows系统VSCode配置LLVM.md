@@ -12,6 +12,7 @@ tags: [VSCode]
 [MSYS2](https://www.msys2.org/)  
 *安装程序名称类似 msys2-x86_64-20230318.exe*  
 <!-- more -->  
+#### 2. 安装编译器
 [配置环境变量]  
 1.在【计算机】图标上右键【属性】。  
 2.在弹出的新窗口选择【高级系统设置】-->【高级】-->【环境变量(N)…】。  
@@ -29,6 +30,7 @@ pacman -S mingw-w64-clang-x86_64-toolchain mingw-w64-clang-x86_64-cninja mingw-w
 *这个命令执行过程中可能会连接超时，使用`外网连接工具`切换网络即可。*  
 4.执行完成后执行：`pacman -Syu`  
 *`pacman -Syu`执行过程中 clang64.exe可能会退出，重新打开执行`pacman -Syu`即可，直到没有需要更新的内容为止。*  
+#### 3. 配置编辑器
 [VSCode安装插件]  
 `Chinese (Simplified) (简体中文) Language Pack for Visual Studio Code`  
 `clangd`  
