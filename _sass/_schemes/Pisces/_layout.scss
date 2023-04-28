@@ -61,7 +61,7 @@
   float: right;
   box-sizing: border-box;
   padding: $content-desktop-padding;
-  width: 80%;
+  width: calc(80% - 20px);
   background: white;
   min-height: 700px;
   box-shadow: $box-shadow-inner;
