@@ -40,7 +40,7 @@ spec:
     version: "7"
     repository:
       iso:
-        localPath: "/root/centos7-rpms-amd64.iso"
+        localPath: "/root/KubeSphere/centos7-rpms-amd64.iso"
         url: 
   kubernetesDistributions:
   - type: kubernetes
