@@ -187,19 +187,6 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/jaeger-es-index-cleaner:1.27
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kiali-operator:v1.38.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kiali:v1.38
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/busybox:1.31.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/nginx:1.14-alpine
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/wget:1.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/hello:plain-text
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/wordpress:4.8-apache
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/hpa-example:latest
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/fluentd:v1.4.2-2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/perl:latest
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/examples-bookinfo-productpage-v1:1.16.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/examples-bookinfo-reviews-v1:1.16.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/examples-bookinfo-reviews-v2:1.16.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/examples-bookinfo-details-v1:1.16.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/examples-bookinfo-ratings-v1:1.16.3
   - registry.cn-beijing.aliyuncs.com/kubesphereio/scope:1.13.0
 ```
 #### 3. 生成制品
@@ -210,26 +197,28 @@ spec:
 **生成制品时需要访问GitHub/Googleapis，下载速度较慢**  
 #### 4. 制作离线集群配置文件
 将kk和kubesphere.tar.gz复制到离线环境安装节点。  
-`vi config-sample.yaml`  
+`vi KubeSphere.yaml`  
 ```
 apiVersion: kubekey.kubesphere.io/v1alpha2
 kind: Cluster
 metadata:
-  name: sample
+  name: liuzh
 spec:
   hosts:
-  - {name: master, address: 10.10.10.1, internalAddress: 10.10.10.1, user: root, password: "123456"}
-  - {name: node1, address: 10.10.10.2, internalAddress: 10.10.10.2, user: root, password: "123456"}
+  - {name: ks-master-0, address: 192.168.220.100, internalAddress: 10.10.10.1, user: root, password: "123456"}
+  - {name: ks-master-1, address: 192.168.220.101, internalAddress: 10.10.10.2, user: root, password: "123456"}
+  - {name: ks-node-0, address: 192.168.220.102, internalAddress: 10.10.10.3, user: root, password: "123456"}
    
   roleGroups:
     etcd:
-    - master
+    - ks-master-0
+    - ks-master-1
     control-plane:
-    - master
+    - ks-master-0
     worker:
-    - node1
+    - ks-master-1
     registry:
-    - node1
+    - ks-node-0
   controlPlaneEndpoint:
    
     domain: lb.kubesphere.local
@@ -247,10 +236,10 @@ spec:
   registry:
     type: harbor
     auths:
-      "dockerhub.kubekey.local":
+      "harbor.liuzh.local":
         username: admin
         password: Harbor12345
-    privateRegistry: "dockerhub.kubekey.local"
+    privateRegistry: "harbor.liuzh.local"
     namespaceOverride: "kubesphereio"
     registryMirrors: []
     insecureRegistries: []
@@ -280,7 +269,7 @@ spec:
     core:
       console:
         enableMultiLogin: true
-        port: 30880
+        port: 40127
         type: NodePort
     redis:
       enabled: false
@@ -378,13 +367,13 @@ spec:
 [赋予执行权限]  
 `chmod +x kk`  
 [使用制品安装Harbor]  
-`./kk init registry -f config-sample.yaml -a kubesphere.tar.gz`  
+`./kk init registry -f KubeSphere.yaml -a kubesphere.tar.gz`  
 [创建Harbor初始化脚本]  
-`vi create_project_harbor.sh`  
+`vi init_harbor.sh`  
 ```
 #!/usr/bin/env bash
    
-url="https://dockerhub.kubekey.local"
+url="https://harbor.liuzh.local"
 user="admin"
 passwd="Harbor12345"
    
@@ -420,10 +409,9 @@ for project in "${harbor_projects[@]}"; do
 done
 ```
 [执行脚本初始化Harbor]  
-`sh create_project_harbor.sh`  
+`sh init_harbor.sh`  
 #### 6. 安装KubeSphere集群
-`./kk create cluster -f config-sample.yaml -a kubesphere.tar.gz --with-packages
-`  
+`./kk create cluster -f KubeSphere.yaml -a kubesphere.tar.gz --with-packages`  
 [查看集群状态]  
 `kubectl logs -n kubesphere-system $(kubectl get pod -n kubesphere-system -l 'app in (ks-install, ks-installer)' -o jsonpath='{.items[0].metadata.name}') -f`  
-**通过http://{IP}:30880 使用默认帐户和密码admin/P@88w0rd即可访问KubeSphere的Web控制台。**  
+**通过http://{IP}:40127 使用默认帐户和密码admin/P@88w0rd即可访问KubeSphere的Web控制台。**  
