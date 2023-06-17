@@ -4,8 +4,8 @@ title: KubeSphere离线安装
 categories: [Kubernetes]
 tags: [Kubernetes]
 ---
-#### 1. 前期准备
-[在互联网Linux机器使用本地yum源安装wget]  
+#### 1. 前期准备(互联网Linux机器)
+[使用本地yum源安装wget]  
 `yum -y install wget`  
 [下载并更换阿里yum源]  
 `wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`  
@@ -20,16 +20,14 @@ tags: [Kubernetes]
 `repotrack socat`  
 [将下载的依赖包复制到离线服务器，一次性安装]  
 `rpm -Uvh --force --nodeps *.rpm`  
-#### 2.	制作manifest
-KubeSphere离线安装使用Kubekey工具完成，离线安装前先要生成制品(artifact)，而制品包含的内容由清单(manifest)指定，所以需要先按照规范制作manifest.yaml文件。  
+#### 2.	制作manifest(互联网Linux机器)
+KubeSphere离线安装使用Kubekey工具完成，离线安装前先要生成制品(artifact)，而制品包含的内容由清单(manifest)指定。  
 `vi manifest.yaml`  
-[centos7-rpms-amd64.iso和kubekey.tar.gz
-下载](https://github.com/kubesphere/kubekey/releases)  
 ```
 apiVersion: kubekey.kubesphere.io/v1alpha2
 kind: Manifest
 metadata:
-  name: sample
+  name: liuzh
 spec:
   arches:
   - amd64
@@ -87,8 +85,6 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-upgrade:v3.3.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.22.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.21.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.20.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kubefed:v0.8.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/tower:v0.2.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/minio:RELEASE.2019-08-07T01-59-21Z
@@ -102,101 +98,19 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/alpine:3.14
   - registry.cn-beijing.aliyuncs.com/kubesphereio/openldap:1.3.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/netshoot:v1.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/cloudcore:v1.9.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/iptables-manager:v1.9.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/edgeservice:v0.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/gatekeeper:v3.5.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/openpitrix-jobs:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/devops-apiserver:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/devops-controller:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/devops-tools:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-jenkins:v3.3.0-2.319.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/inbound-agent:4.10-2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-base:v3.2.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-nodejs:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-maven:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-maven:v3.2.1-jdk11
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-python:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-go:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-go:v3.2.2-1.16
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-go:v3.2.2-1.17
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-go:v3.2.2-1.18
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-base:v3.2.2-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-nodejs:v3.2.0-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-maven:v3.2.0-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-maven:v3.2.1-jdk11-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-python:v3.2.0-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-go:v3.2.0-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-go:v3.2.2-1.16-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-go:v3.2.2-1.17-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/builder-go:v3.2.2-1.18-podman
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/s2ioperator:v3.2.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/s2irun:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/s2i-binary:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/tomcat85-java11-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/tomcat85-java11-runtime:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/tomcat85-java8-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/tomcat85-java8-runtime:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/java-11-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/java-8-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/java-8-runtime:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/java-11-runtime:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/nodejs-8-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/nodejs-6-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/nodejs-4-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/python-36-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/python-35-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/python-34-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/python-27-centos7:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/argocd:v2.3.3
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/argocd-applicationset:v0.4.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/dex:v2.30.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/redis:6.2.6-alpine
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/configmap-reload:v0.5.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/prometheus:v2.34.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/prometheus-config-reloader:v0.55.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/prometheus-operator:v0.55.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-rbac-proxy:v0.11.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-state-metrics:v2.5.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/node-exporter:v1.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/alertmanager:v0.23.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/thanos:v0.25.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/grafana:8.3.3
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-rbac-proxy:v0.8.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/notification-manager-operator:v1.4.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/notification-manager:v1.4.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/notification-tenant-sidecar:v3.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/elasticsearch-curator:v5.7.6
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/elasticsearch-oss:6.8.22
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/fluentbit-operator:v0.13.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/docker:19.03
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/fluent-bit:v1.8.11
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/log-sidecar-injector:1.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/filebeat:6.7.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-events-operator:v0.4.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-events-exporter:v0.4.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-events-ruler:v0.4.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-auditing-operator:v0.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-auditing-webhook:v0.2.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/pilot:1.11.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/proxyv2:1.11.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/jaeger-operator:1.27
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/jaeger-agent:1.27
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/jaeger-collector:1.27
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/jaeger-query:1.27
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/jaeger-es-index-cleaner:1.27
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kiali-operator:v1.38.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kiali:v1.38
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/scope:1.13.0
 ```
-#### 3. 生成制品
+#### 3. 生成制品(互联网Linux机器)
+[下载工具和资源，解压到/root/KubeSphere]  
+[centos7-rpms-amd64.iso和kubekey.tar.gz下载](https://github.com/kubesphere/kubekey/releases)  
 [切换到中文下载地址]  
 `export KKZONE=cn`  
+[赋予kubekey执行权限]  
+`chmod +x kk`  
 [开始生成制品]  
-`./kk artifact export -m manifest.yaml -o kubesphere.tar.gz`  
+`./kk artifact export -m manifest.yaml -o KubeSphere.tar.gz`  
 **生成制品时需要访问GitHub/Googleapis，下载速度较慢**  
-#### 4. 制作离线集群配置文件
-将kk和kubesphere.tar.gz复制到离线环境安装节点。  
+#### 4. 制作离线集群配置文件(离线Linux机器)
+将kk和KubeSphere.tar.gz复制到master节点。  
 `vi KubeSphere.yaml`  
 ```
 apiVersion: kubekey.kubesphere.io/v1alpha2
@@ -205,18 +119,27 @@ metadata:
   name: liuzh
 spec:
   hosts:
-  - {name: ks-master-0, address: 192.168.220.100, internalAddress: 10.10.10.1, user: root, password: "123456"}
-  - {name: ks-master-1, address: 192.168.220.101, internalAddress: 10.10.10.2, user: root, password: "123456"}
-  - {name: ks-node-0, address: 192.168.220.102, internalAddress: 10.10.10.3, user: root, password: "123456"}
+  #address是节点的对外地址，internalAddress是节点的集群内通信地址。
+  - {name: ks-master-0, address: 192.168.220.100, internalAddress: 10.10.10.100, user: root, password: "123456"}
+  - {name: ks-master-1, address: 192.168.220.101, internalAddress: 10.10.10.101, user: root, password: "123456"}
+  - {name: ks-node-0, address: 192.168.220.102, internalAddress: 10.10.10.102, user: root, password: "123456"}
    
   roleGroups:
+    #分布式存储组件，所有节点
     etcd:
     - ks-master-0
     - ks-master-1
+    - ks-node-0
+    #控制节点，master节点
     control-plane:
     - ks-master-0
-    worker:
     - ks-master-1
+    #工作节点，运行pod的节点
+    worker:
+    - ks-master-0
+    - ks-master-1
+    - ks-node-0
+    #镜像仓库节点，运行harbor的节点
     registry:
     - ks-node-0
   controlPlaneEndpoint:
@@ -236,10 +159,11 @@ spec:
   registry:
     type: harbor
     auths:
-      "harbor.liuzh.local":
+      #harbor域名，建议不要改，自定义会出错
+      "dockerhub.kubekey.local":
         username: admin
         password: Harbor12345
-    privateRegistry: "harbor.liuzh.local"
+    privateRegistry: "dockerhub.kubekey.local"
     namespaceOverride: "kubesphereio"
     registryMirrors: []
     insecureRegistries: []
@@ -269,7 +193,8 @@ spec:
     core:
       console:
         enableMultiLogin: true
-        port: 40127
+        #可视化界面端口，范围30005-32767
+        port: 31313
         type: NodePort
     redis:
       enabled: false
@@ -362,18 +287,19 @@ spec:
         mode: "external"
   terminal:
     timeout: 600
+
 ```
-#### 5. 安装Harbor镜像仓库
-[赋予执行权限]  
+#### 5. 安装Harbor镜像仓库(离线Linux机器)
+[赋予kubekey执行权限]  
 `chmod +x kk`  
 [使用制品安装Harbor]  
-`./kk init registry -f KubeSphere.yaml -a kubesphere.tar.gz`  
+`./kk init registry -f KubeSphere.yaml -a KubeSphere.tar.gz`  
 [创建Harbor初始化脚本]  
 `vi init_harbor.sh`  
 ```
 #!/usr/bin/env bash
    
-url="https://harbor.liuzh.local"
+url="https://dockerhub.kubekey.local"
 user="admin"
 passwd="Harbor12345"
    
@@ -410,8 +336,8 @@ done
 ```
 [执行脚本初始化Harbor]  
 `sh init_harbor.sh`  
-#### 6. 安装KubeSphere集群
-`./kk create cluster -f KubeSphere.yaml -a kubesphere.tar.gz --with-packages`  
-[查看集群状态]  
+#### 6. 安装KubeSphere集群(离线Linux机器)
+`./kk create cluster -f KubeSphere.yaml -a KubeSphere.tar.gz --with-packages`  
+[安装中遇到`Please wait for the installation to complete:`，使用以下命令查看集群日志]  
 `kubectl logs -n kubesphere-system $(kubectl get pod -n kubesphere-system -l 'app in (ks-install, ks-installer)' -o jsonpath='{.items[0].metadata.name}') -f`  
-**通过http://{IP}:40127 使用默认帐户和密码admin/P@88w0rd即可访问KubeSphere的Web控制台。**  
+**安装完成后，浏览器访问master节点`http://192.168.220.100:31313`或者`http://192.168.220.101:31313`，默认帐户/密码：`admin/P@88w0rd`，即可访问KubeSphere的可视化控制页面。**  
