@@ -287,7 +287,6 @@ spec:
         mode: "external"
   terminal:
     timeout: 600
-
 ```
 #### 5. 安装Harbor镜像仓库(离线Linux机器)
 [赋予kubekey执行权限]  
