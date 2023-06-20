@@ -11,13 +11,11 @@ tags: [Kubernetes]
 `wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`  
 <!-- more -->  
 [更新yum源缓存]  
-`yum clean all`  
-`yum makecache`  
+`yum clean all && yum makecache`   
 [安装yum-utils]  
 `yum -y install yum-utils`  
 [下载conntrack-tools和socat离线依赖包]  
-`repotrack conntrack-tools`  
-`repotrack socat`  
+`repotrack conntrack-tools openssl socat ipset ebtables chrony ipvsadm`  
 [将下载的依赖包复制到离线服务器，一次性安装]  
 `rpm -Uvh --force --nodeps *.rpm`  
 #### 2.	制作manifest(互联网Linux机器)
