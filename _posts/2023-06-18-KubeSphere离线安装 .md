@@ -77,12 +77,11 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/haproxy:2.3
   - registry.cn-beijing.aliyuncs.com/kubesphereio/nfs-subdir-external-provisioner:v4.0.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/k8s-dns-node-cache:1.15.12
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-installer:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-apiserver:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-console:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-upgrade:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.22.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-installer:v3.3.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-apiserver:v3.3.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-console:v3.3.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.20.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kubefed:v0.8.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/tower:v0.2.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/minio:RELEASE.2019-08-07T01-59-21Z
@@ -334,7 +333,7 @@ done
 [执行脚本初始化Harbor]  
 `sh init_harbor.sh`  
 #### 6. 安装KubeSphere集群(离线Linux机器)
-`./kk create cluster -f KubeSphere.yaml -a KubeSphere.tar.gz --with-packages`  
+`./kk create cluster -f KubeSphere.yaml -a KubeSphere.tar.gz --with-packages --yes`  
 [安装中遇到`Please wait for the installation to complete:`，使用以下命令查看集群日志]  
 `kubectl logs -n kubesphere-system $(kubectl get pod -n kubesphere-system -l 'app in (ks-install, ks-installer)' -o jsonpath='{.items[0].metadata.name}') -f`  
 **安装完成后，浏览器访问master节点`http://192.168.220.100:31313`或者`http://192.168.220.101:31313`，默认帐户/密码：`admin/P@88w0rd`，即可访问KubeSphere的可视化控制页面。**  
