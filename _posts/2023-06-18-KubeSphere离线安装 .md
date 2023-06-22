@@ -9,9 +9,9 @@ tags: [Kubernetes]
 `yum -y install wget`  
 [下载并更换阿里yum源]  
 `wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`  
-<!-- more -->  
 [更新yum源缓存]  
 `yum clean all && yum makecache`   
+<!-- more -->  
 [安装yum-utils]  
 `yum -y install yum-utils`  
 [下载conntrack-tools和socat离线依赖包]  
@@ -72,16 +72,17 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/pod2daemon-flexvol:v3.23.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/typha:v3.23.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/flannel:v0.12.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/provisioner-localpv:3.3.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/linux-utils:3.3.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/provisioner-localpv:2.10.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/linux-utils:2.10.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/haproxy:2.3
   - registry.cn-beijing.aliyuncs.com/kubesphereio/nfs-subdir-external-provisioner:v4.0.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/k8s-dns-node-cache:1.15.12
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-installer:v3.3.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-apiserver:v3.3.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-console:v3.3.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.2
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.20.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-installer:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-apiserver:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-console:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-upgrade:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.22.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kubefed:v0.8.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/tower:v0.2.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/minio:RELEASE.2019-08-07T01-59-21Z
@@ -98,11 +99,9 @@ spec:
 ```
 #### 3. 生成制品(互联网Linux机器)
 [下载工具和资源，解压到/root/KubeSphere]  
-[centos7-rpms-amd64.iso和kubekey.tar.gz下载](https://github.com/kubesphere/kubekey/releases)  
-[切换到中文下载地址]  
-`export KKZONE=cn`  
-[赋予kubekey执行权限]  
-`chmod +x kk`  
+[centos7-rpms-amd64.iso和kubekey-v3.0.0-linux-amd64.tar.gz下载](https://github.com/kubesphere/kubekey/releases)  
+[切换到中文下载地址并赋予kubekey执行权限]  
+`export KKZONE=cn && chmod +x kk`  
 [开始生成制品]  
 `./kk artifact export -m manifest.yaml -o KubeSphere.tar.gz`  
 **生成制品时需要访问GitHub/Googleapis，下载速度较慢**  
