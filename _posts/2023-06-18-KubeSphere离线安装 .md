@@ -9,7 +9,7 @@ tags: [Kubernetes]
 `yum -y install wget && wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`  
 [更新yum源缓存]  
 `yum clean all && yum makecache`  
-<!-- more -->  
+<!-- more -->
 [安装yum-utils]  
 `yum -y install yum-utils`  
 [下载conntrack-tools和socat离线依赖包]  
