@@ -70,8 +70,8 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/pod2daemon-flexvol:v3.23.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/typha:v3.23.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/flannel:v0.12.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/provisioner-localpv:2.10.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/linux-utils:2.10.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/provisioner-localpv:3.3.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/linux-utils:3.3.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/haproxy:2.3
   - registry.cn-beijing.aliyuncs.com/kubesphereio/nfs-subdir-external-provisioner:v4.0.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/k8s-dns-node-cache:1.15.12
