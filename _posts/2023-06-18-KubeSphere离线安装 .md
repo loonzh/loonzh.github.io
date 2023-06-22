@@ -5,12 +5,10 @@ categories: [Kubernetes]
 tags: [Kubernetes]
 ---
 #### 1. 前期准备(互联网Linux机器)
-[使用本地yum源安装wget]  
-`yum -y install wget`  
-[下载并更换阿里yum源]  
-`wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`  
+[使用本地yum源安装wget并下载并更换阿里yum源]  
+`yum -y install wget && wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`  
 [更新yum源缓存]  
-`yum clean all && yum makecache`   
+`yum clean all && yum makecache`  
 <!-- more -->  
 [安装yum-utils]  
 `yum -y install yum-utils`  
