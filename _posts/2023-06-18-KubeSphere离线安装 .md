@@ -295,30 +295,7 @@ url="https://dockerhub.kubekey.local"
 user="admin"
 passwd="Harbor12345"
    
-harbor_projects=(library
-    kubesphereio
-    kubesphere
-    calico
-    coredns
-    openebs
-    csiplugin
-    minio
-    mirrorgooglecontainers
-    osixia
-    prom
-    thanosio
-    jimmidyson
-    grafana
-    elastic
-    istio
-    jaegertracing
-    jenkins
-    weaveworks
-    openpitrix
-    joosthofman
-    nginxdemos
-    fluent
-    kubeedge
+harbor_projects=(kubesphereio
 )
    
 for project in "${harbor_projects[@]}"; do
