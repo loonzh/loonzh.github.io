@@ -64,11 +64,11 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-scheduler:v1.22.12
   - registry.cn-beijing.aliyuncs.com/kubesphereio/pause:3.5
   - registry.cn-beijing.aliyuncs.com/kubesphereio/coredns:1.8.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/cni:v3.20.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-controllers:v3.20.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/node:v3.20.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/pod2daemon-flexvol:v3.20.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/typha:v3.20.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/cni:v3.23.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-controllers:v3.23.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/node:v3.23.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/pod2daemon-flexvol:v3.23.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/typha:v3.23.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/flannel:v0.12.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/provisioner-localpv:2.10.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/linux-utils:2.10.0
@@ -168,7 +168,7 @@ metadata:
   name: ks-installer
   namespace: kubesphere-system
   labels:
-    version: v3.3.1
+    version: v3.3.0
 spec:
   persistence:
     storageClass: ""
