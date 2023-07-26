@@ -70,15 +70,16 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/pod2daemon-flexvol:v3.23.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/typha:v3.23.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/flannel:v0.12.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/provisioner-localpv:2.10.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/linux-utils:2.10.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/provisioner-localpv:3.3.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/linux-utils:3.3.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/haproxy:2.3
   - registry.cn-beijing.aliyuncs.com/kubesphereio/nfs-subdir-external-provisioner:v4.0.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/k8s-dns-node-cache:1.15.12
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-installer:v3.3.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-apiserver:v3.3.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-console:v3.3.0
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-installer:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-apiserver:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-console:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-upgrade:v3.3.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.22.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kubefed:v0.8.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/tower:v0.2.0
@@ -113,9 +114,9 @@ metadata:
 spec:
   hosts:
   #address是节点的对外地址，internalAddress是节点的集群内通信地址。
-  - {name: ks-master-0, address: 192.168.220.100, internalAddress: 10.10.10.100, user: root, password: "123456"}
-  - {name: ks-master-1, address: 192.168.220.101, internalAddress: 10.10.10.101, user: root, password: "123456"}
-  - {name: ks-node-0, address: 192.168.220.102, internalAddress: 10.10.10.102, user: root, password: "123456"}
+  - {name: ks-master-0, address: 192.168.220.1, internalAddress: 10.10.10.1, user: root, password: "123456"}
+  - {name: ks-master-1, address: 192.168.220.2, internalAddress: 10.10.10.2, user: root, password: "123456"}
+  - {name: ks-node-0, address: 192.168.220.3, internalAddress: 10.10.10.3, user: root, password: "123456"}
    
   roleGroups:
     #分布式存储组件，所有节点
@@ -168,7 +169,7 @@ metadata:
   name: ks-installer
   namespace: kubesphere-system
   labels:
-    version: v3.3.0
+    version: v3.3.1
 spec:
   persistence:
     storageClass: ""
@@ -295,7 +296,8 @@ url="https://dockerhub.kubekey.local"
 user="admin"
 passwd="Harbor12345"
    
-harbor_projects=(kubesphereio
+harbor_projects=(library
+    kubesphereio
 )
    
 for project in "${harbor_projects[@]}"; do
