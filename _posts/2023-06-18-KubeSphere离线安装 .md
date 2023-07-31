@@ -114,9 +114,9 @@ metadata:
 spec:
   hosts:
   #address是节点的对外地址，internalAddress是节点的集群内通信地址。
-  - {name: ks-master-0, address: 192.168.220.1, internalAddress: 10.10.10.1, user: root, password: "123456"}
-  - {name: ks-master-1, address: 192.168.220.2, internalAddress: 10.10.10.2, user: root, password: "123456"}
-  - {name: ks-node-0, address: 192.168.220.3, internalAddress: 10.10.10.3, user: root, password: "123456"}
+  - {name: ks-master-0, address: 1.1.1.1, internalAddress: 172.0.0.1, user: root, password: "123456"}
+  - {name: ks-master-1, address: 1.1.1.2, internalAddress: 172.0.0.2, user: root, password: "123456"}
+  - {name: ks-node-0, address: 1.1.1.3, internalAddress: 172.0.0.3, user: root, password: "123456"}
    
   roleGroups:
     #分布式存储组件，所有节点
@@ -296,8 +296,7 @@ url="https://dockerhub.kubekey.local"
 user="admin"
 passwd="Harbor12345"
    
-harbor_projects=(library
-    kubesphereio
+harbor_projects=(kubesphereio
 )
    
 for project in "${harbor_projects[@]}"; do
