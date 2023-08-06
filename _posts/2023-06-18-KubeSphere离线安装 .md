@@ -75,11 +75,10 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/haproxy:2.3
   - registry.cn-beijing.aliyuncs.com/kubesphereio/nfs-subdir-external-provisioner:v4.0.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/k8s-dns-node-cache:1.15.12
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-installer:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-apiserver:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-console:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.1
-  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-upgrade:v3.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-installer:v3.3.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-apiserver:v3.3.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-console:v3.3.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/ks-controller-manager:v3.3.2
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:v1.22.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/kubefed:v0.8.1
   - registry.cn-beijing.aliyuncs.com/kubesphereio/tower:v0.2.0
@@ -94,10 +93,24 @@ spec:
   - registry.cn-beijing.aliyuncs.com/kubesphereio/alpine:3.14
   - registry.cn-beijing.aliyuncs.com/kubesphereio/openldap:1.3.0
   - registry.cn-beijing.aliyuncs.com/kubesphereio/netshoot:v1.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/configmap-reload:v0.5.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/prometheus:v2.34.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/prometheus-config-reloader:v0.55.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/prometheus-operator:v0.55.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-rbac-proxy:v0.11.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-state-metrics:v2.5.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/node-exporter:v1.3.1
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/alertmanager:v0.23.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/thanos:v0.25.2
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/grafana:8.3.3
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/kube-rbac-proxy:v0.8.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/notification-manager-operator:v1.4.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/notification-manager:v1.4.0
+  - registry.cn-beijing.aliyuncs.com/kubesphereio/notification-tenant-sidecar:v3.2.0
 ```
 #### 3. 生成制品(互联网Linux机器)
 [下载工具和资源，解压到/root/KubeSphere]  
-[centos7-rpms-amd64.iso和kubekey-v3.0.0-linux-amd64.tar.gz下载](https://github.com/kubesphere/kubekey/releases)  
+[centos7-rpms-amd64.iso和kubekey-v3.0.7-linux-amd64.tar.gz下载](https://github.com/kubesphere/kubekey/releases)  
 [切换到中文下载地址并赋予kubekey执行权限]  
 `export KKZONE=cn && chmod +x kk`  
 [开始生成制品]  
@@ -169,7 +182,7 @@ metadata:
   name: ks-installer
   namespace: kubesphere-system
   labels:
-    version: v3.3.1
+    version: v3.3.2
 spec:
   persistence:
     storageClass: ""
@@ -310,4 +323,4 @@ done
 `./kk create cluster -f KubeSphere.yaml -a KubeSphere.tar.gz --with-packages --yes`  
 [安装中遇到`Please wait for the installation to complete:`，使用以下命令查看集群日志]  
 `kubectl logs -n kubesphere-system $(kubectl get pod -n kubesphere-system -l 'app in (ks-install, ks-installer)' -o jsonpath='{.items[0].metadata.name}') -f`  
-**安装完成后，浏览器访问master节点`http://192.168.220.100:31313`或者`http://192.168.220.101:31313`，默认帐户/密码：`admin/P@88w0rd`，即可访问KubeSphere的可视化控制页面。**  
+**安装完成后，浏览器访问master节点`http://1.1.1.1:31313`或者`http://1.1.1.2:31313`，默认帐户/密码：`admin/P@88w0rd`，即可访问KubeSphere的可视化控制页面。**  
