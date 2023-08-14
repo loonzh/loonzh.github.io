@@ -1,8 +1,8 @@
 ---
 layout: post
-title: K8s配置
-categories: [K8s]
-tags: [K8s]
+title: Kubernetes命令
+categories: [Kubernetes]
+tags: [Kubernetes]
 ---
 #### 1. 状态和日志
 **[查看全部节点状态]**`kubectl get node`  
