@@ -17,26 +17,22 @@ tags: [Kubernetes]
 <!-- more -->
 #### 2. 创建NFS存储的StorageClass
 1.在存储服务器安装NFS服务并共享文件夹`/StorageShare`  
-2.创建命名空间  
+2.创建RBAC(Role-Based Access Control)  
+`vi nfs-rbac.yaml`  
 ```
-cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: model
-EOF
-```
-3.创建RBAC(Role-Based Access Control)  
-`vi rbac.yaml`  
-```
+  name: liuzh
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: nfs-client-provisioner
-  namespace: model
+  namespace: liuzh
 ---
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
   name: nfs-client-provisioner-runner
 rules:
@@ -53,68 +49,64 @@ rules:
     resources: ["events"]
     verbs: ["create", "update", "patch"]
 ---
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
   name: managed-run-nfs-client-provisioner
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
-    namespace: model
+    namespace: liuzh
 roleRef:
   kind: ClusterRole
   name: nfs-client-provisioner-runner
   apiGroup: rbac.authorization.k8s.io
 ---
-kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
   name: leader-locking-nfs-client-provisioner
-  namespace: model
+  namespace: liuzh
 rules:
   - apiGroups: [""]
     resources: ["endpoints"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
 ---
-kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
 metadata:
   name: leader-locking-nfs-client-provisioner
-  namespace: model
+  namespace: liuzh
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
-    namespace: model
+    namespace: liuzh
 roleRef:
   kind: Role
   name: leader-locking-nfs-client-provisioner
   apiGroup: rbac.authorization.k8s.io
 ```
-`kubectl apply -f rbac.yaml`  
-4.创建StorageClass  
+`kubectl apply -f nfs-rbac.yaml`  
+3.创建provisioner  
+`vi nfs-provisioner.yaml`  
 ```
-cat <<EOF | kubectl apply -f -
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: managed-nfs-storage
-  namespace: model
+  namespace: liuzh
+#nfs-client-provisioner.spec.template.spec.containers.env.PROVISIONER_NAME.value
 provisioner: provisioner-nfs-storage
-#这里的名称要和provisioner配置文件中的环境变量PROVISIONER_NAME保持一致
 parameters:
   archiveOnDelete: "false"
-EOF
-```
-5.创建provisioner  
-`vi nfs-provisioner.yaml`  
-```
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nfs-client-provisioner
   labels:
     app: nfs-client-provisioner
-  namespace: model
+  namespace: liuzh
 spec:
   replicas: 1
   selector:
@@ -139,8 +131,8 @@ spec:
               mountPath: /persistentvolumes
           env:
             - name: PROVISIONER_NAME
+              #managed-nfs-storage.provisioner
               value: provisioner-nfs-storage
-              #provisioner名称,请确保该名称与StorageClass中的provisioner名称保持一致
             - name: NFS_SERVER
               value: 10.10.10.3
             - name: NFS_PATH
@@ -152,3 +144,10 @@ spec:
             path: /StorageShare
 ```
 `kubectl apply -f nfs-provisioner.yaml`  
+#### 3. 创建Nginx+Ingress统一IP访问服务
+1.Kubesphere开启网关服务，记录http端口。  
+2.创建tomcat示例工作负载，虚拟IP+不开放外部访问。  
+3.创建tomcat-svc服务，将tomcat工作负载的8080端口映射到服务8080端口。  
+4.创建应用路由，域名`liuzh.ingress`，路由规则/tomcat对应tomcat-svc服务，此时访问`liuzh.ingress:网关端口/tomcat`即可访问tomcat的8080端口。  
+5.在1.1.1.1服务器使用`echo "1.1.1.1    liuzh.ingress" >> /etc/hosts`命令创建域名解析。  
+6.在1.1.1.1服务器安装Nginx，将`liuzh.ingress:网关端口/`代理到`1.1.1.1:80`，此时访问`1.1.1.1:80/tomcat`即可访问tomcat的8080端口。  
