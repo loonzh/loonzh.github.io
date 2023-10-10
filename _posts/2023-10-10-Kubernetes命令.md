@@ -801,7 +801,7 @@ webhooks:
 ```
 3.部署Nginx Ingress Controller。  
 `kubectl apply -f nginx-ingress-controller.yaml`  
-4.创建一个Ingress。  
+4.创建一个Ingress规则。  
 ```
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -823,7 +823,7 @@ spec:
             port: 
               number: 80 #service端口
 ```
-5.创建一个Nginx。  
+5.创建一个Nginx服务。  
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -868,7 +868,7 @@ spec:
     port: 80
     targetPort: 80
 ```
-6.此时通过域名就可以访问Kubernetes的服务了。  
+6.此时通过域名就可以访问Kubernetes的Nginx服务了(注意80端口会变成Nginx Ingress Controller的端口)。  
 #### 5. 修改Kubernetes私有镜像仓库地址
 未做配置时Kubernetes拉镜像时会以`https`协议访问，假定已创建好的镜像仓库地址为`http://10.10.10.10:80`。  
 1.编辑`worker`节点上`/etc/containerd/config.toml`，查找`plugins."io.containerd.grpc.v1.cri".registry.mirrors`配置，调整为如下内容：  
