@@ -46,7 +46,7 @@ tags: [Greenplum]
 `gpstart -v`  
 5.重启Greenplum  
 `gpstop -r`  
-6.全量备份
+6.全量备份  
 `gpbackup --leaf-partition-data --dbname 库名 --backup-dir 备份目录 --jobs 并发数`  
-7.恢复备份
+7.恢复备份  
 `gprestore -backup-dir 备份目录 --create-db --timestamp 备份时间戳`  
