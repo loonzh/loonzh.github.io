@@ -5,19 +5,13 @@ categories: [数据库]
 tags: [Greenplum]
 ---
 #### 1. Greenplum 6.14 pg_xlog文件夹过大问题解决
-**Greenplum是基于PostgreSQL的MPP(大规模并行处理)数据库.**  
-由于Greenplum 6.14没有`max_wal_size`等限制WAL文件的配置参数，也没有`pg_archivecleanup`等WAL文件删除工具，所以只有以下两种方案：  
-##### 1.1 通过`wal_keep_segments`和`checkpoint_segments`参数限制WAL文件数量(未验证成功)
-1.以`su - gpadmin`命令切换到`gpadmin`用户。  
-2.在主节点使用`gpconfig -c wal_keep_segments -v 3`命令将`wal_keep_segments`的值设为3。  
-3.在主节点和从节点分别找到`postgresql.conf`文件(主节点1个，从节点4个)，将`checkpoint_segments`的值设为3。  
-4.使用`gpstop -u`命令重启Greenplum数据库以使配置更改生效。
-<!-- more -->
-##### 1.2 使用`pg_resetxlog`重置WAL文件起始序列号(已验证成功)
+**Greenplum是基于PostgreSQL的MPP(大规模并行处理)数据库。**  
+**使用`pg_resetxlog`重置WAL文件起始序列号**  
 1.在主节点和从节点分别使用以下命令切换到`gpadmin`用户。  
+`su - gpadmin`  
 `source /usr/local/greenplum-db/greenplum_path.sh`  
 `export MASTER_DATA_DIRECTORY=/home/gpdata/gpmaster/gpseg-1`  
-`su - gpadmin`  
+<!-- more -->
 2.在主节点和从节点执行`gpstop -M fast`关闭Greenplum。  
 3.在主节点使用如下命令，并记录下`NextXID`和`NextOID`的值：  
 `pg_controldata /home/gpdata/gpmaster/gpseg-1 | grep -E "Latest checkpoint's NextXID|Latest checkpoint's NextOID"`  
@@ -46,7 +40,11 @@ tags: [Greenplum]
 `gpstart -v`  
 5.重启Greenplum  
 `gpstop -r`  
-6.全量备份  
+6.重载`pg_hba.conf`和`postgresql.conf`配置文件  
+`gpstop -u`  
+7.全量备份  
 `gpbackup --leaf-partition-data --dbname 库名 --backup-dir 备份目录 --jobs 并发数`  
-7.恢复备份  
+8.恢复备份  
 `gprestore -backup-dir 备份目录 --create-db --timestamp 备份时间戳`  
+9.初始化数据库（重装）  
+`gpinitsystem -I my_initsystem_config`  
