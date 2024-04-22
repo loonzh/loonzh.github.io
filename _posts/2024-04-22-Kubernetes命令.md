@@ -27,12 +27,15 @@ tags: [Kubernetes]
 **[查看ns1命名空间运行中Pod pod1日志]**`kubectl -n ns1 logs pod1`  
 **[查看ns1命名空间已停止Pod pod1日志]**`kubectl -n ns1 describe pod pod1`  
 **[强制删除ns1命名空间的Pod pod1(不检查)]**`kubectl delete pod pod1 -n ns1 --force --grace-period=0`  
-##### 1.5 Deployment命令
+##### 1.5 Deployment/Statefulset/Daemonset命令(以Deployment为例，Statefulset和Daemonset一样)
 **[查看全部Deployment状态]**`kubectl get deployment -A`  
 **[查看ns1命名空间上Deployment状态]**`kubectl get deployment -n ns1`  
+**[查看ns1命名空间上Deployment dp1日志]**`kubectl describe deployment dp1 -n ns1`  
 **[将Deployment dp1的副本数量设为0]**`kubectl scale deployment dp1 --replicas=0`  
-**[导出Deployment dp1的配置(详细)]**`kubectl get deployment dp1 -o yaml > dp1.yaml`  
-**[导出Deployment dp1的配置(精简)]**`kubectl get deployment dp1 --export -o yaml > dp1.yaml`  
+**[重启ns1命名空间的Deployment dp1]**`kubectl rollout restart deployment/dp1 -n ns1`  
+**[查看ns1命名空间的Deployment dp1状态]**`kubectl rollout status deployment/dp1 -n ns1`  
+**[导出Deployment dp1的配置]**`kubectl get deployment dp1 -o yaml > dp1.yaml`  
+**[删除ns1命名空间的Deployment dp1]**`kubectl delete deployment dp1 -n ns1`  
 ##### 1.6 Service命令
 **[查看全部Service状态]**`kubectl get service -A`  
 **[查看ns1命名空间上Service状态]**`kubectl get service -n ns1`  
