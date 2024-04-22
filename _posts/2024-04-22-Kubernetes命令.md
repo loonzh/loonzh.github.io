@@ -5,16 +5,36 @@ categories: [Kubernetes]
 tags: [Kubernetes]
 ---
 #### 1. 状态和日志
-**[查看全部节点状态]**`kubectl get node`  
-**[查看全部Pod状态]**`kubectl get pod -A`  
-**[查看全部命名空间状态]**`kubectl get ns`  
-**[查看运行中Pod日志]**`kubectl -n default logs mysql`  
-**[查看node日志]**`kubectl describe node kmnode1`  
-**[查看pod日志]**`kubectl -n default describe pod mysql`  
+##### 1.1 集群命令
 **[查看集群事件]**`kubectl get events`  
-**[创建deployment]**`kubectl apply -f mysql-deployment.yml`  
-**[重启K8s服务]**`systemctl restart kubelet`  
+**[查看全部节点状态]**`kubectl get node`  
+**[查看全部命名空间状态]**`kubectl get ns`  
+**[查看全部Deployment状态]**`kubectl get deployment -A`  
+**[查看全部节点资源占用]**`kubectl top node`  
+**[查看全部Pod资源占用]**`kubectl top pod -A`  
+**[使用YAML文件创建实体]**`kubectl apply -f kubernetes.yml`  
 <!-- more -->
+**[重启Kubernetes服务]**`systemctl restart kubelet`  
+##### 1.2 命名空间命令
+**[查看ns1命名空间上Pod的资源占用]**`kubectl top pod -n ns1`  
+##### 1.3 节点命令
+**[查看node1节点日志]**`kubectl describe node node1`  
+**[查看node1节点上Pod状态]**`kubectl get pod --node=node1`  
+##### 1.4 Pod命令
+**[查看全部Pod状态]**`kubectl get pod -A`  
+**[查看ns1命名空间上Pod状态]**`kubectl get pod -n ns1`  
+**[查看ns1命名空间运行中Pod pod1日志]**`kubectl -n ns1 logs pod1`  
+**[查看ns1命名空间已停止Pod pod1日志]**`kubectl -n ns1 describe pod pod1`  
+**[强制删除ns1命名空间的Pod pod1(不检查)]**`kubectl delete pod pod1 -n ns1 --force --grace-period=0`  
+##### 1.5 Deployment命令
+**[查看全部Deployment状态]**`kubectl get deployment -A`  
+**[查看ns1命名空间上Deployment状态]**`kubectl get deployment -n ns1`  
+**[将Deployment dp1的副本数量设为0]**`kubectl scale deployment dp1 --replicas=0`  
+**[导出Deployment dp1的配置(详细)]**`kubectl get deployment dp1 -o yaml > dp1.yaml`  
+**[导出Deployment dp1的配置(精简)]**`kubectl get deployment dp1 --export -o yaml > dp1.yaml`  
+##### 1.6 Service命令
+**[查看全部Service状态]**`kubectl get service -A`  
+**[查看ns1命名空间上Service状态]**`kubectl get service -n ns1`  
 #### 2. 创建NFS存储的StorageClass
 1.在存储服务器安装NFS服务并共享文件夹`/StorageShare`  
 2.创建RBAC(Role-Based Access Control)  
