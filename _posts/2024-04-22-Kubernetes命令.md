@@ -6,7 +6,7 @@ tags: [Kubernetes]
 ---
 #### 1. 状态和日志
 ##### 1.1 集群命令
-**[查看集群事件]**`kubectl get events`  
+**[查看集群事件]**`kubectl get event -A`  
 **[查看全部节点状态]**`kubectl get node`  
 **[查看全部命名空间状态]**`kubectl get ns`  
 **[查看全部Deployment状态]**`kubectl get deployment -A`  
@@ -17,12 +17,13 @@ tags: [Kubernetes]
 **[重启Kubernetes服务]**`systemctl restart kubelet`  
 ##### 1.2 命名空间命令
 **[查看ns1命名空间上Pod的资源占用]**`kubectl top pod -n ns1`  
+**[查看ns1命名空间上的事件]**`kubectl get event -n ns1`  
 ##### 1.3 节点命令
 **[查看node1节点日志]**`kubectl describe node node1`  
-**[查看node1节点上Pod状态]**`kubectl get pod --node=node1`  
 ##### 1.4 Pod命令
 **[查看全部Pod状态]**`kubectl get pod -A`  
 **[查看ns1命名空间上Pod状态]**`kubectl get pod -n ns1`  
+**[查看ns1命名空间上Pod状态(含所属节点)]**`kubectl get pod -n ns1 -o wide`  
 **[查看ns1命名空间运行中Pod pod1日志]**`kubectl -n ns1 logs pod1`  
 **[查看ns1命名空间已停止Pod pod1日志]**`kubectl -n ns1 describe pod pod1`  
 **[强制删除ns1命名空间的Pod pod1(不检查)]**`kubectl delete pod pod1 -n ns1 --force --grace-period=0`  
