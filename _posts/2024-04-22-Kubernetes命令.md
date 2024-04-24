@@ -12,33 +12,33 @@ tags: [Kubernetes]
 **[查看全部Deployment状态]**`kubectl get deployment -A`  
 **[查看全部节点资源占用]**`kubectl top node`  
 **[查看全部Pod资源占用]**`kubectl top pod -A`  
-**[使用YAML文件创建实体]**`kubectl apply -f kubernetes.yml`  
+**[使用YAML文件 kubernetes.yml创建实体]**`kubectl apply -f kubernetes.yml`  
 <!-- more -->
 **[重启Kubernetes服务]**`systemctl restart kubelet`  
 ##### 1.2 命名空间命令
-**[查看ns1命名空间上Pod的资源占用]**`kubectl top pod -n ns1`  
-**[查看ns1命名空间上的事件]**`kubectl get event -n ns1`  
+**[查看ns1命名空间上Pod的资源占用]**`kubectl -n ns1 top pod`  
+**[查看ns1命名空间上的事件]**`kubectl -n ns1 get event`  
 ##### 1.3 节点命令
 **[查看node1节点日志]**`kubectl describe node node1`  
 ##### 1.4 Pod命令
 **[查看全部Pod状态]**`kubectl get pod -A`  
-**[查看ns1命名空间上Pod状态]**`kubectl get pod -n ns1`  
-**[查看ns1命名空间上Pod状态(含所属节点)]**`kubectl get pod -n ns1 -o wide`  
+**[查看ns1命名空间上Pod状态]**`kubectl -n ns1 get pod`  
+**[查看ns1命名空间上Pod状态(详细)]**`kubectl -n ns1 get pod -o wide`  
 **[查看ns1命名空间运行中Pod pod1日志]**`kubectl -n ns1 logs pod1`  
 **[查看ns1命名空间已停止Pod pod1日志]**`kubectl -n ns1 describe pod pod1`  
-**[强制删除ns1命名空间的Pod pod1(不检查)]**`kubectl delete pod pod1 -n ns1 --force --grace-period=0`  
+**[强制删除ns1命名空间的Pod pod1(不检查)]**`kubectl -n ns1 delete pod pod1 --force --grace-period=0`  
 ##### 1.5 Deployment/Statefulset/Daemonset命令(以Deployment为例，Statefulset和Daemonset一样)
 **[查看全部Deployment状态]**`kubectl get deployment -A`  
-**[查看ns1命名空间上Deployment状态]**`kubectl get deployment -n ns1`  
-**[查看ns1命名空间上Deployment dp1日志]**`kubectl describe deployment dp1 -n ns1`  
-**[将Deployment dp1的副本数量设为0]**`kubectl scale deployment dp1 --replicas=0`  
-**[重启ns1命名空间的Deployment dp1]**`kubectl rollout restart deployment/dp1 -n ns1`  
-**[查看ns1命名空间的Deployment dp1状态]**`kubectl rollout status deployment/dp1 -n ns1`  
-**[导出Deployment dp1的配置]**`kubectl get deployment dp1 -o yaml > dp1.yaml`  
-**[删除ns1命名空间的Deployment dp1]**`kubectl delete deployment dp1 -n ns1`  
+**[查看ns1命名空间上Deployment状态]**`kubectl -n ns1 get deployment`  
+**[查看ns1命名空间上Deployment dp1日志]**`kubectl -n ns1 describe deployment dp1`  
+**[将ns1命名空间的Deployment dp1的副本数量设为0]**`kubectl -n ns1 scale deployment dp1 --replicas=0`  
+**[重启ns1命名空间的Deployment dp1]**`kubectl -n ns1 rollout restart deployment/dp1`  
+**[查看ns1命名空间的Deployment dp1状态]**`kubectl -n ns1 rollout status deployment/dp1`  
+**[导出ns1命名空间的Deployment dp1的配置]**`kubectl -n ns1 get deployment dp1 -o yaml > dp1.yaml`  
+**[删除ns1命名空间的Deployment dp1]**`kubectl -n ns1 delete deployment dp1`  
 ##### 1.6 Service命令
 **[查看全部Service状态]**`kubectl get service -A`  
-**[查看ns1命名空间上Service状态]**`kubectl get service -n ns1`  
+**[查看ns1命名空间上Service状态]**`kubectl -n ns1 get service`  
 #### 2. 创建NFS存储的StorageClass
 1.在存储服务器安装NFS服务并共享文件夹`/StorageShare`  
 2.创建RBAC(Role-Based Access Control)  
