@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Greenplum问题解决
+title: Greenplum问题
 categories: [数据库]
 tags: [Greenplum]
 ---
