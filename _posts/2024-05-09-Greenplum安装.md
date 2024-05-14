@@ -27,8 +27,14 @@ tags: [Greenplum]
 #### 2. 编译安装Greenplum
 目前Greenplum没有提供ARM发行版，我们需要编译Greenplum源代码自行构建ARM版本。  
 1.建立联网yum源  
-``  
-``  
+` /etc/yum.repos.d/kylin_aarch64.repo`  
+```
+[ks10-adv-os]
+name = Kylin Linux Advanced Server
+baseurl = https://update.cs2c.com.cn/NS/V10/V10SP3.1/os/adv/lic/base/aarch64/
+gpgcheck = 0
+enabled = 1
+```
 2.关闭防火墙  
 `systemctl stop firewalld && systemctl disable firewalld`  
 3.配置Linux内核，添加下列内容  
