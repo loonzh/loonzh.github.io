@@ -130,9 +130,12 @@ sdw2
 12.在mdw初始化集群  
 `/usr/local/greenplum/bin/gpinitsystem -c /home/gpadmin/gpinitsystem_config`  
 13.允许外部IP访问Greenplum数据库  
-`echo 'host     all         all         0.0.0.0/0    md5' >> /data/gpdata/master/gpseg-1/pg_hba.conf`  
+```
+echo 'host     all         gpadmin         0.0.0.0/0       trust
+host     all         all             0.0.0.0/0       md5' >> /data/gpdata/master/gpseg-1/pg_hba.conf
+```  
 14.重载`pg_hba.conf`和`postgresql.conf`配置文件  
-`/usr/local/greenplum/bin/gpstop -u`  
+`/usr/local/greenplum/bin/pg_ctl reload -D /data/gpdata/master/gpseg-1/`  
 #### 4. 配置系统服务
 1.创建`greenplum.service`系统服务文件  
 `vi /etc/systemd/system/greenplum.service`  
