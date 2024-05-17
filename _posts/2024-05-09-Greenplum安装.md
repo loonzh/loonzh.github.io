@@ -17,7 +17,7 @@ tags: [Greenplum]
 1.关闭防火墙  
 `systemctl stop firewalld && systemctl disable firewalld`  
 2.关闭SELinux  
-`setenforce 0 && sed -i 's/enforcing/disabled/' /etc/selinux/config`
+`setenforce 0 && sed -i 's/enforcing/disabled/' /etc/selinux/config`  
 3.修改Linux内核  
 ```
 echo "kernel.shmmni = 4096
