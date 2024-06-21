@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Greenplum安装
+title: Greenplum离线安装
 categories: [数据库]
 tags: [Greenplum]
 ---
