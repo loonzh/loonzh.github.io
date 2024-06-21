@@ -7,11 +7,11 @@ tags: [PostgreSQL]
 #### 1. 在互联网服务器制作安装包
 ##### 1.1 安装EPEL软件源
 `yum install epel-release`  
+<!-- more -->
 ##### 1.2 下载libzstd安装包
 `yum -y install yum-utils && repotrack libzstd`  
 ##### 1.3 下载PostgreSQL安装包
-[postgresql15/postgresql15-contrib/postgresql15-libs/postgresql15-server](https://yum.postgresql.org/15/redhat/rhel-7-x86_64/repoview/postgresqldbserver15.group.html)  
-<!-- more -->
+[postgresql15 / postgresql15-contrib / postgresql15-libs / postgresql15-server](https://yum.postgresql.org/15/redhat/rhel-7-x86_64/repoview/postgresqldbserver15.group.html)  
 ##### 1.4 创建postgresql-15.7.1文件夹并把libzstd安装包和PostgreSQL安装包放进去
 `mkdir postgresql-15.7.1`  
 ##### 1.5 把全部安装包打包成一个压缩包
