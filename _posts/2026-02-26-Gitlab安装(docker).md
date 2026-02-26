@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Gitlab安装(docker)
+title: Gitlab安装(Docker)
 categories: [Gitlab]
 tags: [Gitlab]
 ---
-#### 1. 检查Gitlab版本
+#### 1. 检查仓库里Gitlab版本
 `docker search docker.1ms.run/gitlab`  
 <!-- more -->  
 #### 2. 选择Star最多的版本拉取
