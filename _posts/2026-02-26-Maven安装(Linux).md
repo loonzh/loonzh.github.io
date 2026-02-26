@@ -4,36 +4,16 @@ title: Gitlab安装(docker)
 categories: [Gitlab]
 tags: [Gitlab]
 ---
-#### 1. 检查Gitlab版本
-`docker search docker.1ms.run/gitlab`  
+#### 1. 安装JDK
+下载[JDK8u202源码](https://repo.huaweicloud.com/java/jdk/8u202-b08/)并上传到目标机器。  
+`tar -zxvf jdk-8u202-linux-x64.tar.gz -C /usr/local/`  
+`cd /usr/local`  
+`mv jdk1.8.0_202/ jdk`  
 <!-- more -->  
-#### 2. 选择Star最多的版本拉取
-`docker pull gitlab/gitlab-ce`  
-#### 3. 创建docker-compose文件
-`vi docker-compose.yml`  
-```
-services:
- gitlab:
-   image: gitlab/gitlab-ce:latest
-   container_name: gitlab
-   restart: always
-   hostname: '10.10.10.11'
-   environment:
-     GITLAB_OMNIBUS_CONFIG: |
-       external_url 'http://localhost'
-       gitlab_rails['gitlab_shell_ssh_port'] = 2222
-       gitlab_rails['initial_root_password'] = 'P@ssW0rd'
-       gitlab_rails['time_zone'] = 'Asia/Shanghai'
-   ports:
-     - "8888:80"
-     - "443:443"
-     - "2222:22"
-   volumes:
-     - ./config:/etc/gitlab
-     - ./logs:/var/log/gitlab
-     - ./data:/var/opt/gitlab
-   shm_size: '256m'
-```
-#### 4. 启动docker-compose
-`docker-compose up -d`  
-**此时在宿主机通过 http://10.10.10.11:8888 就可以访问到Gitlab了。**  
+#### 2. 安装Maven
+下载[Maven源码](https://maven.apache.org/download.cgi)并上传到目标机器。  
+`tar -zxvf apache-maven-3.9.12-bin.tar.gz -C /usr/local/`  
+`cd /usr/local`  
+`mv apache-maven-3.9.12/ maven`  
+#### 3. 修改Maven配置文件
+`vi maven/conf/settings.xml`  
