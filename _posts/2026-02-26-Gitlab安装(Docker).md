@@ -10,6 +10,8 @@ tags: [Gitlab]
 #### 2. 选择Star最多的版本拉取
 `docker pull gitlab/gitlab-ce`  
 #### 3. 创建docker-compose文件
+`mkdir -p /usr/local/docker/gitlab_docker`  
+`cd /usr/local/docker/gitlab_docker`  
 `vi docker-compose.yml`  
 ```
 services:
