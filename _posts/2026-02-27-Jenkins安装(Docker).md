@@ -81,4 +81,4 @@ services:
 #### 7. 创建Jenkins项目
 1. 打开Jenkins，点击`新建Item`，输入项目名后选择`Freestyle project`。
 2. 在`源码管理`处配置Gitlab地址并指定分支为`main`。
-3. 点击`Build Steos`，选择`调用顶层 Maven 目标`，选择配置好的`maven`版本，在目标框输入`clean package -Dskiptests`
+3. 点击`Build Steos`，选择`调用顶层 Maven 目标`，选择配置好的`maven`版本，在目标框输入`clean package -DskipTests`
