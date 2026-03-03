@@ -43,17 +43,17 @@ services:
 此时通过以下命令可以看到Jenkins的管理员密码：  
 `docker logs -f jenkins`  
 #### 5. Jenkins初始化
-1. 在宿主机通过 http://10.10.10.11:8888 访问Jenkins，输入刚获取的管理员密码。  
-2. 选择`选择插件来安装`，在新页面保持默认点击`安装`，等待安装完成。  
-3. 使用设置的新密码重新登陆Jenkins，点击右上角齿轮，点击`全局工具配置`。  
-4. 在后端执行mv /usr/local/{maven,jdk} /usr/local/docker/jinkins_docker/data/`把Maven和JDK放到Jenkins的数据目录。  
-5. 返回前端指定Maven和JDK地址，注意使用容器地址而不是宿主机地址。  
-6. 在前端点击右上角齿轮，点击`插件管理`，在`Available plugins`搜索`Publish Over SSH`安装。  
-7. 在前端点击右上角齿轮，点击`系统配置`，最后找到`Publish Over SSH`下的`SSH Server`，按情况填写账号密码等信息。  
+1. 在宿主机通过 http://10.10.10.11:8888 访问Jenkins，输入刚获取的管理员密码。
+2. 选择`选择插件来安装`，在新页面保持默认点击`安装`，等待安装完成。
+3. 使用设置的新密码重新登陆Jenkins，点击右上角齿轮，点击`全局工具配置`。
+4. 在后端执行mv /usr/local/{maven,jdk} /usr/local/docker/jinkins_docker/data/`把Maven和JDK放到Jenkins的数据目录。
+5. 返回前端指定Maven和JDK地址，注意使用容器地址而不是宿主机地址。
+6. 在前端点击右上角齿轮，点击`插件管理`，在`Available plugins`搜索`Publish Over SSH`安装。
+8. 在前端点击右上角齿轮，点击`系统配置`，最后找到`Publish Over SSH`下的`SSH Server`，按情况填写账号密码等信息。
 
 #### 6. 创建Gitlab仓库并提交本地代码
-1. 打开Gitlab创建新项目`mytest`，可见性选择`公开`。  
-2. 点击`mytest`,点击`项目设置`，点击`仓库`，点击`受保护的分支`，取消保护。  
+1. 打开Gitlab创建新项目`mytest`，可见性选择`公开`。
+2. 点击`mytest`,点击`项目设置`，点击`仓库`，点击`受保护的分支`，取消保护。
 3. 在本地项目文件夹打开`Git bash`，依次输入以下命令：  
 *在当前目录初始化一个新的 Git 仓库*  
 `git init`  
@@ -78,7 +78,7 @@ services:
 将暂存区的文件提交到本地仓库  
 *将本地代码推送到远程仓库(-u 建立本地分支与远程分支的关联，后续可直接用 git push)*  
 `git push -uf origin main`  
-5. 打开Gitlab，项目文件已经push到仓库中。  
+5. 打开Gitlab，项目文件已经push到仓库中。
 
 #### 7. Jenkins实现基础CI操作
 1. 打开Jenkins，点击`新建Item`，输入项目名后选择`Freestyle project`。  
