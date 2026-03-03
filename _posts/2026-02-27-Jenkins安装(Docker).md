@@ -78,7 +78,38 @@ services:
 *将本地代码推送到远程仓库(-u 建立本地分支与远程分支的关联，后续可直接用 git push)*
 `git push -uf origin main`  
 5. 打开Gitlab，项目文件已经push到仓库中。
-#### 7. 创建Jenkins项目
+#### 7. Jenkins实现基础CI操作
 1. 打开Jenkins，点击`新建Item`，输入项目名后选择`Freestyle project`。
 2. 在`源码管理`处配置Gitlab地址并指定分支为`main`。
-3. 点击`Build Steos`，选择`调用顶层 Maven 目标`，选择配置好的`maven`版本，在目标框输入`clean package -DskipTests`
+3. 点击`Build Steos`，选择`调用顶层 Maven 目标`，选择配置好的`maven`版本，在目标框输入`clean package -DskipTests`。
+4. 点击`With Ant`，选择之前配置的JDK。  
+5. 点击`构建后操作`，选择`Send build artifacts over SSH`，在`Source files`填写`target/*.jar docker/*`。
+6. 在`Exec command`填写：
+```
+cd /usr/local/test/docker
+mv ../target/*jar ./
+docker-compose down
+docker-compose up -d --build
+docker image prune -f
+```
+7. 在`docker`目录创建`Dockerfile`，以下为示例：  
+```
+FROM frekele/java:jdk8u202
+COPY *.jar /usr/local/app.jar
+WORKDIR /usr/local
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+8. 在`docker`目录创建`docker-compose.yml`，以下为示例：
+```
+services:
+ mytest:
+   build:
+     context: ./
+     dockerfile: Dockerfile
+   image: mytest:v1.0.0
+   container_name: mytest
+   ports:
+     - "8081:8080"
+```
+9. 点击`立即构建`，第一次需要下载镜像所以速度较慢。
+10. 构建完成后访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页。  
