@@ -98,7 +98,7 @@ docker image prune -f
 -
 ```
 7. 在`docker`目录创建`docker-compose.yml`，以下为示例：
-```
+```yaml
 services:
  mytest:
    build:
