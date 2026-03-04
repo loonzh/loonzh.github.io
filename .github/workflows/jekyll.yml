@@ -2,7 +2,7 @@ name: Jekyll site build and deploy
 
 on:
   push:
-    branches: ["master"]
+    branches: ["master"] #
   pull_request:
     branches: ["master"]
 
