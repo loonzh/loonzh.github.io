@@ -95,15 +95,9 @@ mv ../target/*jar ./
 docker-compose down
 docker-compose up -d --build
 docker image prune -f
+-
 ```
-7. 在`docker`目录创建`Dockerfile`，以下为示例：
-```
-FROM frekele/java:jdk8u202
-COPY *.jar /usr/local/app.jar
-WORKDIR /usr/local
-ENTRYPOINT ["java", "-jar", "app.jar"]
-```
-8. 在`docker`目录创建`docker-compose.yml`，以下为示例：
+7. 在`docker`目录创建`docker-compose.yml`，以下为示例：
 ```
 services:
  mytest:
@@ -114,6 +108,13 @@ services:
    container_name: mytest
    ports:
      - "8081:8080"
+```
+8. 在`docker`目录创建`Dockerfile`，以下为示例：
+```
+FROM frekele/java:jdk8u202
+COPY *.jar /usr/local/app.jar
+WORKDIR /usr/local
+ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 9. 推送文件后点击`立即构建`，第一次需要下载镜像所以速度较慢，构建完成后访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页。
 
