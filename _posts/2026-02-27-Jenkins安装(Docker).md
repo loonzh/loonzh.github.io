@@ -97,8 +97,9 @@ docker-compose up -d --build
 docker image prune -f
 ```
 7. 在`docker`目录创建`Dockerfile`，以下为示例：
+`docker pull ringcentral/jdk:8u202`  
 ```
-FROM frekele/java:jdk8u202
+FROM ringcentral/jdk:8u202
 COPY *.jar /usr/local/app.jar
 WORKDIR /usr/local
 ENTRYPOINT ["java", "-jar", "app.jar"]
