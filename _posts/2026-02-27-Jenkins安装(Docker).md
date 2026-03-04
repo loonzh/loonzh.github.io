@@ -112,7 +112,7 @@ services:
    image: mytest:v1.0.0  
    container_name: mytest  
    ports:  
-     - "8081:8080"  
+     `- "8081:8080"`  
 9. 推送文件后点击`立即构建`，第一次需要下载镜像所以速度较慢，构建完成后访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页。
 
 #### 8. Jenkins实现基础CD操作
