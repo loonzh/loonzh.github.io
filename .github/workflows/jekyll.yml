@@ -1,0 +1,50 @@
+name: Jekyll site build and deploy
+
+on:
+  push:
+    branches: ["main"]  # 如果你的默认分支是 master，改为 master
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'  # 使用较新版本的 Ruby
+        bundler-cache: true   # 自动缓存 gem
+        
+    - name: Install dependencies
+      run: bundle install
+      
+    - name: Build Jekyll site
+      run: bundle exec jekyll build --verbose  # --verbose 可以输出详细日志
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./_site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    # 设置部署权限
+    permissions:
+      pages: write
+      id-token: write
+      
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
