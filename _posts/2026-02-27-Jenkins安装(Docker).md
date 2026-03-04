@@ -96,14 +96,14 @@ docker-compose down
 docker-compose up -d --build
 docker image prune -f
 ```
-7.在`docker`目录创建`Dockerfile`，以下为示例：
+7. 在`docker`目录创建`Dockerfile`，以下为示例：
 ```
 FROM frekele/java:jdk8u202
 COPY *.jar /usr/local/app.jar
 WORKDIR /usr/local
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
-8. 在`docker`目录创建`docker-compose.yml`，以下为示例：  
+8. 在`docker`目录创建`docker-compose.yml`，以下为示例：
 <pre><code class="language-yaml">services: 
  mytest: 
    build: 
