@@ -112,7 +112,9 @@ services:
      dockerfile: Dockerfile 
    image: mytest:v1.0.1
    container_name: mytest 
-   ports: 
+   ports:
+```
+```
      - "8081:8080"
 ```
 9. 推送文件后点击`立即构建`，第一次需要下载镜像所以速度较慢，构建完成后访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页。
