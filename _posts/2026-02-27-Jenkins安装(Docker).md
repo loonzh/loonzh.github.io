@@ -110,7 +110,7 @@ services:
    build: 
      context: ./ 
      dockerfile: Dockerfile 
-   image: mytest:v1.0.0 
+   image: mytest:v1.0.1
    container_name: mytest 
    ports: 
      - "8081:8080"
