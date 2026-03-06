@@ -55,4 +55,9 @@ vm.max_map_count=262144
 `docker-compose up -d`  
 #### 5. SonarQube初始化
 1. SonarQube启动后，访问`http://10.10.10.12:9000`，使用`admin/admin`登录，按提示修改密码。
-2. 
+2. 点击`Administration`，点击`Marketplace`，点击`I understand the risk`，在下边搜索框搜索`chinese`，选择`Chinese PackLocalization`，点击`Install`。
+3. 如果安装失败，查看日志有可能是因为服务器时间不对，使用`ntpdate ntp.tencent.com`给服务器授时，使用`hwclock --systohc`将系统时间写入硬件。
+4. 插件安装成功后按提示重启SonarQube，即可看到中文版页面。
+
+#### 6. SonarScanner安装
+1. 
