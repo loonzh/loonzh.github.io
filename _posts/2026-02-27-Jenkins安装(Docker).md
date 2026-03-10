@@ -124,3 +124,16 @@ services:
 3. 打开Gitib新增标签`1.0.0`，保存当前版本。
 4. 开发更改代码后push，在Gitlib新增标签`1.0.1`，保存新版本。
 5. 在Jenkins点击`Build with Parameters`，选择版本，访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页相应变化。
+
+#### 9. Jenkins使用宿主机的Docker
+`chmod o+rw /var/run/docker.sock`  
+`cd /usr/local/docker/jinkins_docker`  
+`vi docker-compose.yml`  
+在`volumes:`项下追加：  
+```
+- /usr/bin/docker:/usr/bin/docker
+- /etc/docker/daemon.json
+- /var/run/docker.sock:/var/run/docker.sock
+```
+`docker-compose down`  
+`docker-compose up -d`  
