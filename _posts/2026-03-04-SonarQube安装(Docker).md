@@ -18,6 +18,7 @@ services:
   db:
     image: postgres:15
     container_name: db
+    restart: always
     ports:
       - "5432:5432"
     networks:
@@ -29,6 +30,7 @@ services:
   sonarqube:
     image: library/sonarqube:lts-community
     container_name: sonarqube
+    restart: always
     depends_on:
       - db
     ports:
