@@ -137,3 +137,41 @@ services:
 ```
 `docker-compose down`  
 `docker-compose up -d`  
+#### 10. 目标服务器构建制作镜像脚本
+`vi deploy.sh`  
+```
+#!/bin/bash
+
+harborAddr=$1
+harborRepo=$2
+projectName=$3
+imageTag=$4
+containerPort=$5
+hostPort=$6
+
+imageName=$harborAddr/$harborRepo/$projectName:$imageTag
+containerId=`docker ps -a | grep ${projectName} | awk '{print $1}'`
+tags=`docker images | grep ${project} | awk '{print $2}'`
+
+if [ "$containerId" != "" ]; then
+    docker stop $containerId
+    docker rm $containerId
+fi
+
+if [[ "$tags" =~ "$imageTag" ]]; then
+    docker rmi $imageName
+fi
+
+docker login -u admin -p Harbor12345 $harborAddr
+docker pull $imageName
+docker run -d -p $hostPort:$containerPort --name $projectName $imageName
+```
+`chmod a+x deploy.sh `  
+`mv deploy.sh /usr/bin/`  
+#### 11. Jenkins制作镜像并推送Harbor
+1. 在项目的`配置`里删除`构建后操作`的`Send build artifacts over SSH`，在`Build Steps`里`Execute SonarQube Scanner`后边增加构建步骤，选择`执行 shell`。
+```
+
+```
+2. 
+3. 
