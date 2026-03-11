@@ -122,7 +122,7 @@ services:
 1. 在`配置`里勾选`参数化构建过程`，添加`Git 参数`，名称和描述自定义，`参数类型`选`标签`，默认值填`origin/main`。
 2. 点击`Build Steos`，选择`执行 shell`，输入`git checkout $tag`后把框体移动到`调用顶层 Maven 目标`上方。
 3. 打开Gitib新增标签`1.0.0`，保存当前版本。
-4. 开发更改代码后push，在Gitlib新增标签`1.0.1`，保存新版本。
+4. 开发更改代码后push，在Gitlib新增标签`1.0.1`。
 5. 在Jenkins点击`Build with Parameters`，选择版本，访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页相应变化。
 
 #### 9. Jenkins使用宿主机的Docker
@@ -132,12 +132,17 @@ services:
 在`volumes:`项下追加：  
 ```
 - /usr/bin/docker:/usr/bin/docker
-- /etc/docker/daemon.json
+- /etc/docker/daemon.json:/etc/docker/daemon.json
 - /var/run/docker.sock:/var/run/docker.sock
 ```
+`chmod o+rw /etc/docker/daemon.json`  
+`chmod o+rw /var/run/docker.sock`  
 `docker-compose down`  
 `docker-compose up -d`  
-#### 10. 目标服务器构建制作镜像脚本
+#### 10. 在Docker添加Harbor仓库地址
+`vi /etc/docker/daemon.json`，在`"registry-mirrors": [`的上一行追加`"insecure-registries": ["10.10.10.12:80"],`。  
+`systemctl reload docker`  
+#### 11. 目标服务器构建制作镜像脚本
 `vi deploy.sh`  
 ```
 #!/bin/bash
@@ -146,8 +151,8 @@ harborAddr=$1
 harborRepo=$2
 projectName=$3
 imageTag=$4
-containerPort=$5
-hostPort=$6
+hostPort=$5
+containerPort=$6
 
 imageName=$harborAddr/$harborRepo/$projectName:$imageTag
 containerId=`docker ps -a | grep ${projectName} | awk '{print $1}'`
@@ -168,10 +173,17 @@ docker run -d -p $hostPort:$containerPort --name $projectName $imageName
 ```
 `chmod a+x deploy.sh `  
 `mv deploy.sh /usr/bin/`  
-#### 11. Jenkins制作镜像并推送Harbor
-1. 在项目的`配置`里删除`构建后操作`的`Send build artifacts over SSH`，在`Build Steps`里`Execute SonarQube Scanner`后边增加构建步骤，选择`执行 shell`。
+#### 12. Jenkins制作镜像并推送Harbor
+1. 点击`General`，在`参数化构建过程`最下边点击`添加参数`，选择`字符参数`，名称`hostPort`，默认值`8081`。
+2. 再次点击`添加参数`，选择`字符参数`，名称`containerPort`，默认值`8080`。
+3. 在项目的`配置`里，点击`Build Steps`，在`Execute SonarQube Scanner`后边增加构建步骤，选择`执行 shell`。
 ```
-
+mv target/*.jar docker/
+docker build -t mytest:$tag docker/
+docker login -u admin -p Harbor12345 10.10.10.12:80
+docker tag mytest:$tag 10.10.10.12:80/mytest:$tag
+docker push 10.10.10.12:80/mytest:$tag
 ```
-2. 
-3. 
+4. 在`构建后操作`，清空`Send build artifacts over SSH`的内容，在`Exec command`输入`deploy.sh 10.10.10.12:80 library ${JOB_NAME} $tag $hostPort $containerPort`。
+5. 在本地项目删除`Dockerfile`，更新项目文件版本，推送到Gitlab，在Gitlab新增标签`2.0.0`。
+6.  在Jenkins点击`Build with Parameters`，选择标签`2.0.0`，访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页相应变化。
