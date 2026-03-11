@@ -126,22 +126,21 @@ services:
 5. 在Jenkins点击`Build with Parameters`，选择版本，访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页相应变化。
 
 #### 9. Jenkins使用宿主机的Docker
-`chmod o+rw /var/run/docker.sock`  
 `cd /usr/local/docker/jinkins_docker`  
-`vi docker-compose.yml`  
-在`volumes:`项下追加：  
+`docker-compose down`  
+`vi docker-compose.yml`，在`volumes:`项下追加：  
 ```
 - /usr/bin/docker:/usr/bin/docker
 - /etc/docker/daemon.json:/etc/docker/daemon.json
 - /var/run/docker.sock:/var/run/docker.sock
 ```
-`chmod o+rw /etc/docker/daemon.json`  
-`chmod o+rw /var/run/docker.sock`  
-`docker-compose down`  
+`groupadd docker`  
+`chown root:docker /etc/docker/daemon.json`  
+`chown root:docker /var/run/docker.sock`  
 `docker-compose up -d`  
 #### 10. 在Docker添加Harbor仓库地址
 `vi /etc/docker/daemon.json`，在`"registry-mirrors": [`的上一行追加`"insecure-registries": ["10.10.10.12:80"],`。  
-`systemctl reload docker`  
+`systemctl restart docker`  
 #### 11. 目标服务器构建制作镜像脚本
 `vi deploy.sh`  
 ```
@@ -156,7 +155,7 @@ containerPort=$6
 
 imageName=$harborAddr/$harborRepo/$projectName:$imageTag
 containerId=`docker ps -a | grep ${projectName} | awk '{print $1}'`
-tags=`docker images | grep ${project} | awk '{print $2}'`
+tags=`docker images | grep ${projectName} | awk '{print $2}'`
 
 if [ "$containerId" != "" ]; then
     docker stop $containerId
@@ -181,8 +180,8 @@ docker run -d -p $hostPort:$containerPort --name $projectName $imageName
 mv target/*.jar docker/
 docker build -t mytest:$tag docker/
 docker login -u admin -p Harbor12345 10.10.10.12:80
-docker tag mytest:$tag 10.10.10.12:80/mytest:$tag
-docker push 10.10.10.12:80/mytest:$tag
+docker tag mytest:$tag 10.10.10.12:80/library/mytest:$tag
+docker push 10.10.10.12:80/library/mytest:$tag
 ```
 4. 在`构建后操作`，清空`Send build artifacts over SSH`的内容，在`Exec command`输入`deploy.sh 10.10.10.12:80 library ${JOB_NAME} $tag $hostPort $containerPort`。
 5. 在本地项目删除`Dockerfile`，更新项目文件版本，推送到Gitlab，在Gitlab新增标签`2.0.0`。
