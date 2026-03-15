@@ -178,11 +178,44 @@ docker run -d -p $hostPort:$containerPort --name $projectName $imageName
 3. 在项目的`配置`里，点击`Build Steps`，在`Execute SonarQube Scanner`后边增加构建步骤，选择`执行 shell`。
 ```
 mv target/*.jar docker/
-docker build -t mytest:$tag docker/
+docker build -t ${JOB_NAME}:$tag docker/
 docker login -u admin -p Harbor12345 10.10.10.12:80
-docker tag mytest:$tag 10.10.10.12:80/library/mytest:$tag
-docker push 10.10.10.12:80/library/mytest:$tag
+docker tag ${JOB_NAME}:$tag 10.10.10.12:80/library/${JOB_NAME}:$tag
+docker push 10.10.10.12:80/library/${JOB_NAME}:$tag
 ```
 4. 在`构建后操作`，清空`Send build artifacts over SSH`的内容，在`Exec command`输入`deploy.sh 10.10.10.12:80 library ${JOB_NAME} $tag $hostPort $containerPort`。
 5. 在本地项目删除`Dockerfile`，更新项目文件版本，推送到Gitlab，在Gitlab新增标签`2.0.0`。
-6.  在Jenkins点击`Build with Parameters`，选择标签`2.0.0`，访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页相应变化。
+6. 在Jenkins点击`Build with Parameters`，选择标签`2.0.0`，访问`http://10.10.10.12:8081`即可看到`mytest`的欢迎页相应变化。
+
+#### 13. Jenkins使用Pipeline script
+1. 打开Jenkins，点击`新建Item`，输入项目名后选择`流水线`。
+2. 点击`流水线`选择`Pipeline script from SCM`，在`SCM`处选择`Git`，在`Repository URL`输入复制的`Gitlab`项目拉取地址。
+3. 本地项目根目录创建`Jenkinsfile`文件，在`environment`里追加如下内容：
+```
+harborUser = 'admin'
+harborPasswd = 'Harbor12345'
+harborAddress = '10.10.10.12:80'
+harborRepo = 'library'
+sonarqubeUrl = 'http://10.10.10.12:9000'
+```
+4. 在`配置`里勾选`参数化构建过程`，添加`Git 参数`，名称和描述自定义，`参数类型`选`标签`，默认值填`origin/main`；点击`添加参数`，选择`字符参数`，名称`hostPort`，默认值`8081`；点击`添加参数`，选择`字符参数`，名称`containerPort`，默认值`8080`。
+5. 点击`流水线语法`，选择`checkout: Check out from version control`，在`Repository URL`输入复制的`Gitlab`项目拉取地址，点击`生成流水线脚本`，将生成的命令放到`Jenkinsfile`的`steps`里，需要将`*/master`替换为`${tag}`。
+6. 在`流水线语法`选择`sh: Shell Script`，输入`/var/jenkins_home/maven/bin/mvn clean package -DskipTests`后点击`生成流水线脚本`，将生成的命令放到`Jenkinsfile`的`steps`里。
+7. 在`流水线语法`选择`sh: Shell Script`，输入`/var/jenkins_home/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${sonarqubeUrl} -Dsonar.source=./ -Dsonar.projectname=${JOB_NAME} -Dsonar.projectKey=${JOB_NAME} -Dsonar.java.binaries=./target/ -Dsonar.login=[SonarQube密钥]`后点击`生成流水线脚本`，将生成的命令放到`Jenkinsfile`的`steps`里。
+8. 在`Jenkinsfile`的`environment`里追加如下内容：
+```
+harborUser = 'admin'
+harborPasswd = 'Harbor12345'
+harborAddress = '10.10.10.12:80'
+harborRepo = 'library'
+```
+9. 在`流水线语法`选择`sh: Shell Script`，输入如下内容后点击`生成流水线脚本`，将生成的命令放到`Jenkinsfile`的`steps`里：
+```
+mv target/*.jar docker/
+docker build -t ${JOB_NAME}:${tag} docker/
+docker login -u ${harborUser} -p ${harborPasswd} ${harborAddress}
+docker tag ${JOB_NAME}:${tag} ${harborAddress}/${harborRepo}/${JOB_NAME}:${tag}
+docker push ${harborAddress}/${harborRepo}/${JOB_NAME}:${tag}
+```
+10. 在`流水线语法`选择`sshPublisher: Send build artifacts over SSH`，在`Exec command`输入`deploy.sh ${harborAddress} ${harborRepo} ${JOB_NAME} ${tag} ${hostPort} ${containerPort}`后点击`生成流水线脚本`，将生成的命令放到`Jenkinsfile`的`steps`里：
+11. 在本地项目保存`Jenkinsfile`文件，推送到Gitlab，在Jenkins点击`Build with Parameters`，选择标签，访问`http://10.10.10.12:8081`即可看到`loonzh`的欢迎页。
