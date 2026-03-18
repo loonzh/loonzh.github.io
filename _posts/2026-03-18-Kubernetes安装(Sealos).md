@@ -35,6 +35,7 @@ sealos load -i cilium-v1.14.19.tar
 4. 安装完成后使用`kubectl get node -o wide`查看节点状态，使用`kubectl get pod -A -o wide`查看容器组状态(如果`coredns`没启动，有可能是`/etc/resolv.conf`为空导致`coredns`获取不到上游DNS信息)。
 5. 使用`cat .kube/config`获取集群信息(如果`server`后边的信息不对需要先修改)，在图形化界面导入即可管理集群。
 6. 使用`kubeadm certs check-expiration`命令查看证书过期时间，会发现`super-admin.conf`的有限期只有一年，到期后可以使用如下脚本自动续期：
+
 `vi /usr/local/bin/renew-k8s-certs.sh`
 ```
 #!/bin/bash
