@@ -19,8 +19,6 @@ server 1.pool.ntp.org iburst
 #### 2. 客户端配置
 `vi /etc/chrony.conf`(替换)  
 ```
-```
-```
 server 10.10.10.12 iburst
 ```
 `systemctl restart chronyd`  
