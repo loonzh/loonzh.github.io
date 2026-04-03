@@ -36,6 +36,10 @@ sealos load -i cilium-v1.14.19.tar
 5. 使用`cat .kube/config`获取集群信息(如果`server`后边的信息不对需要先修改)，在图形化界面导入即可管理集群。
 
 #### 3. 安装IngressNginxController
+1. 访问[ingress-nginx-4.14.3.tgz源码](https://github.com/kubernetes/ingress-nginx/releases)下载二进制包，复制到离线服务器。
+2. 将`docker.1ms.run/dyrnq/kube-webhook-certgen:v1.6.7`和`docker.1ms.run/dyrnq/ingress-nginx-controller:v1.14.3`推送到Harbor仓库。
+3. 使用`tar -zxvf ingress-nginx-4.14.3.tgz`解压，使用`vi ingress-nginx/values.yaml`把`registry:`后边换成`10.10.10.12`。
+4. 使用`helm install ingress-nginx ingress-nginx --namespace ingress-nginx --create-namespace`安装`ingress-nginx-controller`。
 
 #### 4. 解决证书过期问题
 使用`kubeadm certs check-expiration`命令查看证书过期时间，会发现`super-admin.conf`的有限期只有一年，到期后可以使用如下脚本自动续期：  
@@ -70,7 +74,8 @@ echo "[$DATE] 证书续期完成" >> $LOG_FILE
 2. 启动Pod(离线服务器需要提前加载镜像包)：`kubectl run nginx -n loonzh --image=docker.1ms.run/nginx:1.29.6`
 3. 查看Pod信息(`IP`字段是容器的集群地址，可以用来访问`Nginx`欢迎页)：`kubectl describe pod nginx -n lonnzh`
 4. 启动Deployment(Deployment会守护Pod)：`kubectl create deployment nginx -n loonzh --image=docker.1ms.run/nginx:1.29.6`
-5. 
+
+
 `vim nginx.yaml`
 ```
 apiVersion: apps/v1
@@ -109,7 +114,7 @@ spec:
   ports:
   - port: 10080
     targetPort: 80
-  type: NodePort
+  type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -127,5 +132,5 @@ spec:
           service:
             name: nginx-service
             port:
-              number: 30080
+              number: 10080
 ```
