@@ -11,7 +11,9 @@ tags: [Harbor]
 #### 2. 创建CA证书
 `mkdir -p /data/cert/ca && cd /data/cert`  
 ` openssl genrsa -out ca/ca.key 4096`  
-` openssl req -x509 -new -nodes -key ca/ca.key -sha256 -days 3650 -out ca/ca.crt -subj "/C=CN/ST=Beijing/L=Beijing/O=Harbor/CN=Harbor CA"`  
+```
+openssl req -x509 -new -nodes -key ca/ca.key -sha256 -days 3650 -out ca/ca.crt -subj "/C=CN/ST=Beijing/L=Beijing/O=Harbor/CN=Harbor CA"
+```  
 #### 3. 创建服务器证书
 `openssl genrsa -out harbor.key 2048`  
 `openssl req -new -key harbor.key -out harbor.csr -subj "/C=CN/ST=Beijing/L=Beijing/O=Harbor/CN=harbor.loonzh.com"`  
