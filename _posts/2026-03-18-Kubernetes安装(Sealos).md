@@ -70,22 +70,18 @@ echo "[$DATE] 证书续期完成" >> $LOG_FILE
 ```
 0 3 1 */2 * /usr/local/bin/renew-k8s-certs.sh
 ```
-#### 5. Kubernetes基础操作
+#### 5. 创建容器组
 1. 创建命名空间`loonzh`：`kubectl create namespace loonzh`
 2. 启动Pod(离线服务器需要提前加载镜像包)：`kubectl run nginx -n loonzh --image=docker.1ms.run/nginx:1.29.6`
 3. 查看Pod信息(`IP`字段是容器的集群地址，可以用来访问`Nginx`欢迎页)：`kubectl describe pod nginx -n lonnzh`
-4. 启动Deployment(Deployment会守护Pod)：`kubectl create deployment nginx -n loonzh --image=docker.1ms.run/nginx:1.29.6`
-
-
-`vim nginx.yaml`
+#### 6. 创建部署(属于Workload)
+`kubectl apply -f nginx-deployment.yaml`  
 ```
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: loonzh
   name: nginx-deployment
-  labels:
-    app: nginx-deployment-app
 spec:
   replicas: 3
   selector:
@@ -101,14 +97,32 @@ spec:
         image: docker.1ms.run/nginx:1.29.6
         ports:
         - containerPort: 80
----
+```
+#### 7. 创建服务(NodePort模式)
+`kubectl apply -f nginx-service.yaml`  
+```
 apiVersion: v1
 kind: Service
 metadata:
   namespace: loonzh
   name: nginx-service
-  labels:
-    app: nginx-service-app
+spec:
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30080
+  type: NodePort
+```
+#### 8. 创建服务(ClusterIP模式和LoadBalancer模式)
+`kubectl apply -f nginx-service.yaml`  
+```
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: loonzh
+  name: nginx-service
 spec:
   selector:
     app: nginx
@@ -116,18 +130,22 @@ spec:
   - port: 10080
     targetPort: 80
   type: ClusterIP
----
+```
+#### 9. 创建路由(LoadBalancer模式才需要创建Ingress，需要域名)
+`kubectl apply -f nginx-ingress.yaml`  
+```
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-ingress
   namespace: loonzh
+  name: nginx-ingress
 spec:
   ingressClassName: ingress
   rules:
-  - http:
+  - host: nginx.loonzh.cn
+    http:
       paths:
-      - path: /
+      - path: /nginx
         pathType: Prefix
         backend:
           service:
@@ -135,3 +153,5 @@ spec:
             port:
               number: 10080
 ```
+#### 10. 创建有状态副本集
+#### 11. 创建
