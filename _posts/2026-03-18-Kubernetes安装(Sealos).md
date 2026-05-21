@@ -7,8 +7,9 @@ tags: [Kubernetes]
 #### 1. 在联网服务器拉取镜像并打包
 1. 访问[Sealos源码](https://github.com/labring/sealos/releases)下载二进制包，复制到联网服务器。
 2. 使用`tar xvf sealos_5.1.1_linux_amd64.tar.gz sealos`解压，使用`mv sealos /usr/local/bin/`放到全局工具目录，使用`sealos version`验证生效。
-3. 访问[Registry Explore网站](https://explore.ggcr.dev/)确定`registry.cn-shanghai.aliyuncs.com/labring/kubernetes`、`registry.cn-shanghai.aliyuncs.com/labring/helm`、`registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller`和`registry.cn-shanghai.aliyuncs.com/labring/cilium`的版本。
-4. 使用如下命令拉取远程镜像到本地(使用`sealos images`查看本地镜像)：
+3. 访问[Registry Explore网站](https://explore.ggcr.dev/)查询镜像仓库中镜像的最新版本。
+4. 确定`registry.cn-shanghai.aliyuncs.com/labring/kubernetes`、`registry.cn-shanghai.aliyuncs.com/labring/helm`、`registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller`和`registry.cn-shanghai.aliyuncs.com/labring/cilium`的版本。
+5. 使用如下命令拉取远程镜像到本地(使用`sealos images`查看本地镜像)：
 ```
 sealos pull registry.cn-shanghai.aliyuncs.com/labring/kubernetes:v1.31.11
 sealos pull registry.cn-shanghai.aliyuncs.com/labring/helm:3.19.2
