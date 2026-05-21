@@ -26,6 +26,7 @@ services:
     volumes:
       - ./kuboard-log:/app/logs
 ```
+`docker-compose up -d`  
 #### 3. 登录Kuboard
 1. 管理员用户为：`admin`，默认密码为 ：`Kuboard123`，首次登录后按提示更改密码。
 2. 点击`Kubernetes 集群`，点击`导入集群`。
