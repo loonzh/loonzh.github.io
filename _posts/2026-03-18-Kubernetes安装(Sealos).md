@@ -13,14 +13,14 @@ tags: [Kubernetes]
 ```
 sealos pull registry.cn-shanghai.aliyuncs.com/labring/kubernetes:v1.30.14
 sealos pull registry.cn-shanghai.aliyuncs.com/labring/helm:v3.18.4
-sealos pull registry.cn-shanghai.aliyuncs.com/labring/cilium:1.17.6
+sealos pull registry.cn-shanghai.aliyuncs.com/labring/cilium:1.16.12
 ```
 <!-- more -->
 5. 使用如下命令将本地镜像打包(仅归档不压缩)：
 ```
-sealos save -o kubernetes-v1.31.11.tar registry.cn-shanghai.aliyuncs.com/labring/kubernetes:v1.30.14
-sealos save -o helm-v1.19.2.tar registry.cn-shanghai.aliyuncs.com/labring/helm:v3.18.4
-sealos save -o cilium-v1.14.19.tar registry.cn-shanghai.aliyuncs.com/labring/cilium:1.17.6
+sealos save -o kubernetes.tar registry.cn-shanghai.aliyuncs.com/labring/kubernetes:v1.30.14
+sealos save -o helm.tar registry.cn-shanghai.aliyuncs.com/labring/helm:v3.18.4
+sealos save -o cilium.tar registry.cn-shanghai.aliyuncs.com/labring/cilium:1.16.12
 ```
 6. 将镜像包复制到离线服务器(`master`节点)，所有离线服务器使用相同密码。
 
@@ -28,11 +28,11 @@ sealos save -o cilium-v1.14.19.tar registry.cn-shanghai.aliyuncs.com/labring/cil
 1. 在离线服务器(`master`节点)部署`Sealos`。
 2. 使用如下命令将镜像包装载为本地镜像(使用`sealos images`查看本地镜像)：
 ```
-sealos load -i kubernetes-v1.30.14.tar
-sealos load -i helm-v1.18.4.tar
-sealos load -i cilium-1.17.6.tar
+sealos load -i kubernetes.tar
+sealos load -i helm.tar
+sealos load -i cilium.tar
 ```
-3. 使用`sealos run registry.cn-shanghai.aliyuncs.com/labring/kubernetes:v1.30.14 registry.cn-shanghai.aliyuncs.com/labring/helm:v3.18.4 registry.cn-shanghai.aliyuncs.com/labring/cilium:1.17.6 --masters 10.10.10.20 --nodes 10.10.10.21,10.10.10.22 -p L+ah204313805`安装`Kubernetes`。
+3. 使用`sealos run registry.cn-shanghai.aliyuncs.com/labring/kubernetes:v1.30.14 registry.cn-shanghai.aliyuncs.com/labring/helm:v3.18.4 registry.cn-shanghai.aliyuncs.com/labring/cilium:1.16.12 --masters 10.10.10.20 --nodes 10.10.10.21,10.10.10.22 -p L+ah204313805`安装`Kubernetes`。
 4. 安装完成后使用`kubectl get node -o wide`查看节点状态，使用`kubectl get pod -A -o wide`查看容器组状态(如果`coredns`没启动，有可能是`/etc/resolv.conf`为空导致`coredns`获取不到上游DNS信息)。
 5. 使用`cat .kube/config`获取集群信息(如果`server`后边的信息不对需要先修改)，在图形化界面导入即可管理集群。
 
