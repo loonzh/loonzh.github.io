@@ -32,7 +32,7 @@ sealos load -i kubernetes.tar
 sealos load -i helm.tar
 sealos load -i cilium.tar
 ```
-3. 使用`sealos run registry.cn-shanghai.aliyuncs.com/labring/kubernetes:v1.30.14 registry.cn-shanghai.aliyuncs.com/labring/helm:v3.18.4 registry.cn-shanghai.aliyuncs.com/labring/cilium:1.16.12 --masters 10.10.10.20 --nodes 10.10.10.21,10.10.10.22 -p L+ah204313805`安装`Kubernetes`。
+3. 使用`sealos run registry.cn-shanghai.aliyuncs.com/labring/kubernetes:v1.30.14 registry.cn-shanghai.aliyuncs.com/labring/helm:v3.18.4 registry.cn-shanghai.aliyuncs.com/labring/cilium:1.16.12 --masters 10.10.10.20 --nodes 10.10.10.21,10.10.10.22 -p 123456`安装`Kubernetes`。
 4. 安装完成后使用`kubectl get node -o wide`查看节点状态，使用`kubectl get pod -A -o wide`查看容器组状态(如果`coredns`没启动，有可能是`/etc/resolv.conf`为空导致`coredns`获取不到上游DNS信息)。
 5. 使用`cat .kube/config`获取集群信息(如果`server`后边的信息不对需要先修改)，在图形化界面导入即可管理集群。
 
